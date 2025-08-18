@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hi, I’m Your Name</title>
+    <style>
+        body {
+            font: 16px system-ui, sans-serif;
+            max-width: 720px;
+            margin: 40px auto;
+            line-height: 1.6;
+        }
+
+        nav a {
+            margin-right: 12px
+        }
+
+        h1 {
+            margin-bottom: .2rem
+        }
+
+        .muted {
+            color: #666
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Your Name</h1>
+        <p class="muted">Engineer • Student • Maker</p>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/projects.html">Projects</a>
+            <a href="/resume.pdf">Résumé</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Welcome</h2>
+        <p>This is my personal website hosted on GitHub Pages.</p>
+    </main>
+    <footer class="muted">© <span id="y"></span> Your Name</footer>
+    <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+</body>
+
+</html>
