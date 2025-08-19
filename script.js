@@ -4,39 +4,24 @@ document.getElementById('y').textContent = new Date().getFullYear();
 // tabs
 const links = Array.from(document.querySelectorAll('.sidebar .tab-link'));
 const panels = {
-    '#welcome': document.getElementById('welcome'),
-    '#projects': document.getElementById('projects')
+    'welcome': document.getElementById('welcome'),
+    'experience': document.getElementById('experience')
 };
 
-function show(hash) {
-    if (!panels[hash]) hash = '#welcome';
+function show(target) {
+    if (!panels[target]) target = 'welcome';
 
     // toggle active link
-    links.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === hash));
+    links.forEach(btn => btn.classList.toggle('is-active', btn.dataset.target === target));
 
-    // show only the target panel (others are display:none)
-    Object.entries(panels).forEach(([k, el]) => el.classList.toggle('is-active', k === hash));
-
-    // keep hash for refresh/back
-    if (location.hash !== hash) history.replaceState(null, '', hash);
-
-    // reset scroll to the top of the content area
-    const container = document.querySelector('.tabs');
-    if (container) container.scrollIntoView({ behavior: 'instant', block: 'start' });
-    // If you prefer a smooth jump, use:
-    // container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // show only the target panel
+    Object.entries(panels).forEach(([k, el]) => el.classList.toggle('is-active', k === target));
 }
 
-// initial view (support direct #projects links)
-show(location.hash || '#welcome');
+// initial view (always Home)
+show('welcome');
 
 // nav clicks
-links.forEach(a => {
-    a.addEventListener('click', e => {
-        e.preventDefault();
-        show(a.getAttribute('href'));
-    });
+links.forEach(btn => {
+    btn.addEventListener('click', () => show(btn.dataset.target));
 });
-
-// back/forward support
-window.addEventListener('hashchange', () => show(location.hash));

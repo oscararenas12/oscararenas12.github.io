@@ -36,32 +36,83 @@
                 </p>
             </section>
 
-            <!-- Projects -->
-            <section id="projects" class="tab-panel" role="region" aria-label="Projects">
-                <h2>Projects</h2>
+            <!-- Experience -->
+            <section id="experience" class="tab-panel" role="region" aria-label="Experience">
+                <h2>Experience</h2>
 
                 <div class="card">
-                    <h3>NNSA – VS Code Extension for Ontologies</h3>
-                    <p>Developed ontology visualization tool.</p>
+                    <h3>
+                        AI Research Intern -
+                        <a href="https://ict.usc.edu/" target="_blank" rel="noopener noreferrer">
+                            USC Institute for Creative Technologies
+                        </a>
+                    </h3>
+                    <p><em>Los Angeles, California | 2025 – Present</em></p>
+                    <ul>
+                        <li>Curated K-12 English science text datasets and performed statistical analyses on random samples,
+                            demonstrating that meaningful insights can be achieved without relying on large datasets.</li>
+                        <li>Developed Python scripts to evaluate untargeted LLM translation outputs, introduced grade-specific
+                            targeting, and implemented a retry AI agent that iteratively re-translated up to five times to achieve
+                            the target grade.</li>
+                        <li>Evaluated ChatGPT 4o, Gemini, Cohere, and LLaMA 3.x models using NGSS-aligned prompts and Spanish
+                            readability metrics (Szigriszt-Pazos, Fernández-Huerta).</li>
+                    </ul>
                 </div>
 
                 <div class="card">
-                    <h3>USC ICT – AI Research</h3>
-                    <p>Researched LLM performance on K–12 science text translations into Spanish.</p>
+                    <h3>Data Science Intern - National Nuclear Security Administration</h3>
+                    <p><em>Remote | 2024 – 2025</em></p>
+                    <ul>
+                        <li>Supported the
+                            <a href="https://www.energy.gov/nnsa/office-defense-nuclear-nonproliferation" target="_blank"
+                                rel="noopener noreferrer">
+                                Defense Nuclear Nonproliferation R&amp;D
+                            </a> office with the Data Science portfolio.
+                        </li>
+                        <li>Created an ontology focused on Trustworthy, Effective, and Deployable AI (TED-AI) using Python to
+                            identify gaps in R&D priorities.</li>
+                        <li>Developed a VS Code extension for uploading and visualizing structured datasets with D3.js; implemented
+                            using Test-Driven Development (TDD).</li>
+                        <li>Built an AI agent leveraging Python LangChain libraries and LLMs to evaluate research documents against
+                            the ontology.</li>
+                    </ul>
                 </div>
 
                 <div class="card">
-                    <h3>Personal – GenInv</h3>
-                    <p>A Python desktop app that automatically generates invoices using <code>tkcalendar</code> and
-                        <code>customtkinter</code>, built with Test-Driven Development.
-                    </p>
+                    <h3>Physics Tutor - Cerritos College</h3>
+                    <p><em>Remote | 2019 – 2020</em></p>
+                    <ul>
+                        <li>Provided individual and group tutoring in PHYS 101 and PHYS 201.</li>
+                        <li>Helped students prepare for exams through problem-solving practice and concept reviews.</li>
+                        <li>Improved comprehension of challenging topics such as mechanics and thermodynamics.</li>
+                    </ul>
                 </div>
 
                 <div class="card">
-                    <h3>Personal – Pong VS Code Extension</h3>
-                    <p>A VS Code extension where two AutoGen agents play Pong, combining a Vanilla JS frontend and a
-                        Python
-                        Flask backend.</p>
+                    <h3>
+                        Programming Instructor -
+                        <a href="https://www.dreamsforschools.org/" target="_blank" rel="noopener noreferrer">
+                            Dreams for Schools
+                        </a>
+                    </h3>
+                    <p><em>Santa Ana, California | 2023 – 2024</em></p>
+                    <ul>
+                        <li>Organized lesson plans to teach basic engineering and programming concepts.</li>
+                        <li>Taught Arduino fundamentals in C++ and guided students in building a remote-controlled racing car.</li>
+                        <li>Led a student team to 1st place in a game development competition using DFS Appmaker -
+                            <a href="https://youtu.be/nqcCiZzd9Jk?t=150" target="_blank" rel="noopener noreferrer">watch video of me</a>.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Accounting Coordinator - Utopia Transport Inc.</h3>
+                    <p><em>Remote, California | 2019 – 2020</em></p>
+                    <ul>
+                        <li>Managed payroll, budgeting, and financial reporting tasks.</li>
+                        <li>Coordinated with shipping lines and chassis companies (CMA, Evergreen, DCLI, Trac) to resolve billing
+                            disputes and ensure accurate invoicing.</li>
+                    </ul>
                 </div>
             </section>
         </main>
@@ -69,10 +120,17 @@
         <!-- Right-side, simple vertical tabs -->
         <aside class="sidebar" aria-label="Sections">
             <nav>
-                <a href="#welcome" class="tab-link is-active">Home</a>
-                <a href="#projects" class="tab-link">Projects</a>
+                <button class="tab-link is-active" data-target="welcome">Home</button>
+                <button class="tab-link" data-target="experience">Experience</button>
                 <hr>
-                <a href="resume/resume_OA.pdf" class="external">Résumé</a>
+                <!-- External links -->
+                <a href="resume/resume_OA.pdf" class="external" target="_blank" rel="noopener noreferrer" aria-label="Resume">
+                    📄 Résumé
+                </a>
+                <a href="https://github.com/oscararenas12" class="external" target="_blank" rel="noopener noreferrer"
+                    aria-label="GitHub profile">
+                    💻 GitHub
+                </a>
             </nav>
         </aside>
     </div>
