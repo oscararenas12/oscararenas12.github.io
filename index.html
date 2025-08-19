@@ -4,45 +4,81 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Hi, I’m Your Name</title>
-    <style>
-        body {
-            font: 16px system-ui, sans-serif;
-            max-width: 720px;
-            margin: 40px auto;
-            line-height: 1.6;
-        }
+    <title>Hi, I’m Oscar Manuel Arenas</title>
 
-        nav a {
-            margin-right: 12px
-        }
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-        h1 {
-            margin-bottom: .2rem
-        }
-
-        .muted {
-            color: #666
-        }
-    </style>
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <header>
-        <h1>Your Name</h1>
-        <p class="muted">Engineer • Student • Maker</p>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/projects.html">Projects</a>
-            <a href="/resume.pdf">Résumé</a>
-        </nav>
+        <div class="profile">
+            <img src="images/oscar-arenas-head-shot.jpg" alt="Oscar Manuel Arenas portrait" class="profile-pic">
+            <div class="profile-text">
+                <h1>Oscar Manuel Arenas</h1>
+                <p class="muted">Computer Science Graduate Student • AI Researcher • Software Engineer</p>
+            </div>
+        </div>
     </header>
-    <main>
-        <h2>Welcome</h2>
-        <p>This is my personal website hosted on GitHub Pages.</p>
-    </main>
-    <footer class="muted">© <span id="y"></span> Your Name</footer>
-    <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+
+    <!-- NEW: two-column layout -->
+    <div class="layout">
+        <main class="tabs">
+            <!-- Welcome (Bio) -->
+            <section id="welcome" class="tab-panel is-active" role="region" aria-label="Welcome">
+                <h2>Welcome 👋</h2>
+                <p>
+                    I’m Oscar, a Computer Science graduate student at California State University, Long Beach.
+                    I focus on <strong>AI research, software engineering, and data science</strong>.
+                </p>
+            </section>
+
+            <!-- Projects -->
+            <section id="projects" class="tab-panel" role="region" aria-label="Projects">
+                <h2>Projects</h2>
+
+                <div class="card">
+                    <h3>NNSA – VS Code Extension for Ontologies</h3>
+                    <p>Developed ontology visualization tool.</p>
+                </div>
+
+                <div class="card">
+                    <h3>USC ICT – AI Research</h3>
+                    <p>Researched LLM performance on K–12 science text translations into Spanish.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Personal – GenInv</h3>
+                    <p>A Python desktop app that automatically generates invoices using <code>tkcalendar</code> and
+                        <code>customtkinter</code>, built with Test-Driven Development.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Personal – Pong VS Code Extension</h3>
+                    <p>A VS Code extension where two AutoGen agents play Pong, combining a Vanilla JS frontend and a
+                        Python
+                        Flask backend.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Right-side, simple vertical tabs -->
+        <aside class="sidebar" aria-label="Sections">
+            <nav>
+                <a href="#welcome" class="tab-link is-active">Home</a>
+                <a href="#projects" class="tab-link">Projects</a>
+                <hr>
+                <a href="resume/resume_OA.pdf" class="external">Résumé</a>
+            </nav>
+        </aside>
+    </div>
+
+    <footer>© <span id="y"></span> Oscar Manuel Arenas</footer>
+    <script src="script.js" defer></script>
 </body>
 
 </html>

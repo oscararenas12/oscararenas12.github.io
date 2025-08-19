@@ -1,0 +1,192 @@
+/* Theme (kept simple) */
+:root {
+    --bg: #0b1220;
+    --text: #e5e7eb;
+    --text-strong: #f3f4f6;
+    --muted: #9ca3af;
+    --brand: #60a5fa;
+    --brand-hover: #93c5fd;
+    --card: #0f172a;
+    --border: #1f2937;
+    --radius: 10px;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg: #f9fafb;
+        --text: #1f2937;
+        --text-strong: #111827;
+        --muted: #6b7280;
+        --brand: #2563eb;
+        --brand-hover: #1d4ed8;
+        --card: #ffffff;
+        --border: #e5e7eb;
+    }
+}
+
+/* Base */
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 0 auto;
+    padding: 0 16px;
+    max-width: 1100px;
+    line-height: 1.75;
+    background: var(--bg);
+    color: var(--text);
+}
+
+h1 {
+    margin: .2rem 0;
+    font-size: clamp(2rem, 2.2vw + 1.2rem, 2.8rem);
+    color: var(--text-strong);
+    font-weight: 800
+}
+
+h2 {
+    margin: .5rem 0 1rem;
+    font-size: 1.4rem;
+    color: var(--text-strong)
+}
+
+.muted {
+    color: var(--muted)
+}
+
+/* Header */
+header {
+    padding: 28px 0 8px
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap
+}
+
+.profile-pic {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--brand)
+}
+
+.profile-text {
+    text-align: left
+}
+
+/* Layout: main + right sidebar */
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 24px;
+    align-items: start;
+    margin: 18px 0 32px;
+}
+
+/* Sidebar (simple, sticky) */
+.sidebar {
+    position: sticky;
+    top: 18px
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+.sidebar a {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.sidebar a:hover {
+    color: var(--brand);
+    border-color: var(--brand)
+}
+
+.sidebar .tab-link.is-active {
+    border-color: var(--brand)
+}
+
+.sidebar hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 10px 0
+}
+
+/* Tabs */
+.tabs {
+    min-width: 0;
+}
+
+/* Hide inactive panels so they don't take space */
+.tab-panel {
+    display: none;
+    /* <-- key change */
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.tab-panel.is-active {
+    display: block;
+    /* only the active one shows */
+}
+
+/* Cards */
+.card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin: 12px 0;
+}
+
+.card h3 {
+    margin: 0 0 .35rem 0;
+    font-size: 1.05rem;
+    color: var(--text-strong)
+}
+
+/* Footer */
+footer {
+    margin: 36px 0 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: .95rem
+}
+
+/* Small screens: stack; sidebar turns horizontal */
+@media (max-width: 760px) {
+    .layout {
+        grid-template-columns: 1fr
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap
+    }
+
+    .sidebar a {
+        flex: 1 0 auto;
+        text-align: center
+    }
+}
