@@ -5,7 +5,8 @@ document.getElementById('y').textContent = new Date().getFullYear();
 const links = Array.from(document.querySelectorAll('.sidebar .tab-link'));
 const panels = {
     'welcome': document.getElementById('welcome'),
-    'experience': document.getElementById('experience')
+    'experience': document.getElementById('experience'),
+    'projects': document.getElementById('projects')
 };
 
 function show(target) {
