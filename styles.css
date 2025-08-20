@@ -192,21 +192,6 @@ header {
     margin: .18rem 0;
 }
 
-/* Links inside cards: subtle + branded */
-.card a {
-    color: var(--brand);
-    text-decoration: none;
-    border-bottom: 1px dashed transparent;
-    transition: border-color .15s ease, color .15s ease;
-}
-
-.card a:hover,
-.card a:focus-visible {
-    color: var(--brand-hover);
-    border-bottom-color: var(--brand-hover);
-    outline: none;
-}
-
 /* Experience header spacing */
 #experience h2 {
     margin: .25rem 0 .6rem;
@@ -250,4 +235,18 @@ footer {
 .sidebar .external:hover {
     color: var(--brand);
     border-color: var(--brand);
+}
+
+/* Global link style (everywhere) */
+a, a:link, a:visited {
+  color: var(--brand);
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: border-color .15s ease, color .15s ease;
+}
+a:hover,
+a:focus-visible {
+  color: var(--brand-hover);
+  border-bottom-color: var(--brand-hover);
+  outline: none;
 }
