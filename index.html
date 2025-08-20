@@ -140,6 +140,62 @@
                     </ul>
                 </div>
             </section>
+            <!-- Projects -->
+            <section id="projects" class="tab-panel" role="region" aria-label="Projects">
+                <h2>Projects</h2>
+            
+                <!-- 1) PONG FIRST -->
+                <div class="card">
+                    <h3>
+                        <a href="https://github.com/oscararenas12/pong-autogen-vscode" target="_blank" rel="noopener noreferrer">
+                            🏓 AutoGen Pong (VS Code Extension)
+                        </a>
+                    </h3>
+                    <p><em>Experimental VS Code Extension</em></p>
+                    <ul>
+                        <li>Classic Pong game inside a VS Code WebView — paddles controlled by AutoGen agents.</li>
+                        <li>Canvas-based frontend with Python + Flask backend.</li>
+                        <li>Functional testing setup with Playwright; clean separation between extension frontend and agent backend.
+                        </li>
+                        <li>Status: environment scaffolded; game logic, backend agent interaction, and Flask routing coming next.
+                        </li>
+                    </ul>
+                </div>
+            
+                <!-- 2) LSTM Forecaster -->
+                <div class="card">
+                    <h3>
+                        <a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster" target="_blank"
+                            rel="noopener noreferrer">
+                            LSTM Vending Sales Forecaster
+                        </a>
+                    </h3>
+                    <p><em>Graduate Machine Learning Course | Experimental Work</em></p>
+                    <ul>
+                        <li>Experimental forecasting using older time-series models (e.g., LSTM, ARIMA, baselines) to understand
+                            their behavior.</li>
+                        <li>Applied to proprietary sales data from two vending machines I own.</li>
+                        <li>Built to learn/evaluate legacy approaches as part of my graduate ML coursework.</li>
+                    </ul>
+                </div>
+            
+                <!-- 3) GenInv -->
+                <div class="card">
+                    <h3>
+                        <a href="https://github.com/oscararenas12/genInv" target="_blank" rel="noopener noreferrer">
+                            GenInv – Invoice Generator
+                        </a>
+                    </h3>
+                    <p><em>Personal Project | Test-Driven Development</em></p>
+                    <ul>
+                        <li>Desktop app to automatically generate invoices using <code>tkcalendar</code>,
+                            <code>customtkinter</code>, and <code>PyPDF2</code>.</li>
+                        <li>Workflow: select property → select/set default tenant → confirm/adjust next billing date.</li>
+                        <li>Supports changing default tenant and auto-advancing billing dates; invoices built from prepared file
+                            paths.</li>
+                    </ul>
+                </div>
+            </section>
         </main>
 
         <!-- Right-side, simple vertical tabs -->
@@ -147,6 +203,7 @@
             <nav>
                 <button class="tab-link is-active" data-target="welcome">Home</button>
                 <button class="tab-link" data-target="experience">Experience</button>
+                <button class="tab-link" data-target="projects">Projects</button>
                 <hr>
                 <!-- External links -->
                 <a href="resume/resume_OA.pdf" class="external" target="_blank" rel="noopener noreferrer" aria-label="Resume">
@@ -155,6 +212,10 @@
                 <a href="https://github.com/oscararenas12" class="external" target="_blank" rel="noopener noreferrer"
                     aria-label="GitHub profile">
                     💻 GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/oscar-arenas01/" class="external" target="_blank" rel="noopener noreferrer"
+                    aria-label="LinkedIn profile">
+                    🔗 LinkedIn
                 </a>
             </nav>
         </aside>
