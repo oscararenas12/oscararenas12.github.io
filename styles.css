@@ -197,6 +197,42 @@ header {
     margin: .25rem 0 .6rem;
 }
 
+/* ========== Certificate ========== */
+.certificate-toggle {
+    margin-top: 8px;
+}
+
+.certificate-toggle summary {
+    cursor: pointer;
+    color: var(--brand);
+    font-size: .92rem;
+    font-weight: 600;
+    list-style: none;
+}
+
+.certificate-toggle summary::before {
+    content: "▸ ";
+}
+
+.certificate-toggle[open] summary::before {
+    content: "▾ ";
+}
+
+.certificate-toggle summary:hover {
+    color: var(--brand-hover);
+}
+
+.certificate {
+    max-width: 340px;
+    width: 100%;
+    margin-top: 8px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
 /* ========== Footer ========== */
 footer {
     margin: 36px 0 24px;

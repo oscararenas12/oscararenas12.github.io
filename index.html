@@ -19,7 +19,7 @@
             <img src="images/oscar-arenas-head-shot.jpg" alt="Oscar Manuel Arenas portrait" class="profile-pic">
             <div class="profile-text">
                 <h1>Oscar Manuel Arenas</h1>
-                <p class="muted">Computer Science Graduate Student • Machine Learning Software Engineer</p>
+                <p class="muted">Computer Science Graduate Student • Machine Learning • Software Engineer</p>
             </div>
         </div>
     </header>
@@ -75,18 +75,33 @@
                 <h2>Experience</h2>
 
                 <div class="card">
+                    <h3>Data Infrastructure &amp; Analysis Intern – <a href="https://willog.io/en" target="_blank" rel="noopener noreferrer">Willog</a></h3>
+                    <p><em>Seoul, South Korea | Dec 2025 – Jan 2026</em></p>
+                    <ul>
+                        <li>Designed and implemented a production Sales CRM web application</li>
+                        <li>Built a Kanban-based lead management system backed by Google Sheets and supporting multi-user workflows</li>
+                        <li>Integrated Google Gmail, Calendar, and Drive APIs for email tracking, scheduling, and document linking</li>
+                        <li>Developed analytics dashboards with KPIs and interactive charts to visualize pipeline value, win rates, and sales performance</li>
+                    </ul>
+                    <details class="certificate-toggle">
+                        <summary>Show Certificate</summary>
+                        <img src="images/willog-certificate.png" alt="Willog Certificate of Completion – Oscar Arenas" class="certificate">
+                    </details>
+                </div>
+
+                <div class="card">
                     <h3>
                         AI Research Intern -
                         <a href="https://ict.usc.edu/" target="_blank" rel="noopener noreferrer">
                             USC Institute for Creative Technologies
                         </a>
                     </h3>
-                    <p><em>Los Angeles, California | August 2025 – Present</em></p>
+                    <p><em>Los Angeles, California | May 2025 – August 2025</em></p>
                     <ul>
-                        <li>Designed a workflow to analyze 3rd to 12th grade English science text datasets to evaluate ChatGPT-4o, Gemini, Cohere,
+                        <li>Designed a workflow to analyze 3rd to 12th grade English science text datasets to evaluate LLMs such as ChatGPT-4o, Gemini,
                             and locally hosted Hugging Face models on Spanish translations performance using Spanish readability metrics.</li>
                         <li>Developed Python scripts to evaluate untargeted vs. grade-targeted Spanish translations, and implemented a Microsoft
-                            AutoGen multi-agent retry system that improved grade-level alignment accuracy by up to 40%</li>
+                            AutoGen multi-agent prompt retry system that improved grade-level alignment accuracy by up to 60%</li>
                         <li>Documented workflows and statistical analysis processes so researchers could trace, reproduce, and extend experiments</li>
                     </ul>
                 </div>
@@ -113,11 +128,12 @@
 
                 <div class="card">
                     <h3>Physics Tutor - Cerritos College</h3>
-                    <p><em>Remote | 2019 – 2020</em></p>
+                    <p><em>Norwalk, California | 2019 – 2020</em></p>
                     <ul>
-                        <li>Provided individual and group tutoring in PHYS 101 and PHYS 201.</li>
-                        <li>Helped students prepare for exams through problem-solving practice and concept reviews.</li>
-                        <li>Improved comprehension of challenging topics such as mechanics and thermodynamics.</li>
+                        <li>Provided drop-in tutoring for approximately 5 students per day in introductory physics courses (PHYS 101 and PHYS 201).</li>
+                        <li>Guided students through foundational concepts such as kinematics, Newton's laws, energy, and basic thermodynamics.</li>
+                        <li>Helped students prepare for exams through problem-solving practice, concept reviews, and worked examples.</li>
+                        <li>Adapted explanations to different learning levels and broke down abstract physics concepts into approachable steps.</li>
                     </ul>
                 </div>
 
@@ -140,19 +156,53 @@
 
                 <div class="card">
                     <h3>Accounting Intern - Utopia Transport Inc.</h3>
-                    <p><em>Remote, California | 2019 – 2020</em></p>
+                    <p><em>Los Angeles, California | 2019 – 2020</em></p>
                     <ul>
-                        <li>Managed payroll, budgeting, and financial reporting tasks.</li>
-                        <li>Coordinated with shipping lines and chassis companies (CMA, Evergreen, DCLI, Trac) to resolve billing
-                            disputes and ensure accurate invoicing.</li>
+                        <li>Processed approximately 30 invoices daily and managed payroll, budgeting, and financial reporting for a fleet of 15 drivers.</li>
+                        <li>Resolved an average of 3 billing disputes per day by coordinating with shipping lines and chassis companies (CMA, Evergreen, DCLI, Trac).</li>
+                        <li>Modernized company operations by introducing Microsoft tools and setting up data infrastructure, supporting growth from 5 to 15 drivers.</li>
                     </ul>
                 </div>
             </section>
             <!-- Projects -->
             <section id="projects" class="tab-panel" role="region" aria-label="Projects">
                 <h2>Projects</h2>
-            
-                <!-- 1) PONG FIRST -->
+
+                <!-- 1) Golf Course Segmentation -->
+                <div class="card">
+                    <h3>
+                        <a href="https://github.com/oscararenas12/golf-course-segmentation" target="_blank" rel="noopener noreferrer">
+                            Golf Course Segmentation
+                        </a>
+                    </h3>
+                    <p><em>Python, TensorFlow, Next.js, FastAPI |
+                        <a href="https://www.csulbgolfcoursedata.com/" target="_blank" rel="noopener noreferrer">Live Site</a>
+                    </em></p>
+                    <ul>
+                        <li>Trained and fine-tuned a custom U-Net model (ResNet50 encoder) for 6-class aerial image segmentation of golf course features (fairways, greens, tees, bunkers, water hazards).</li>
+                        <li>Built a Next.js web app with Google Maps API integration for dataset creation, annotation, and one-click AI segmentation analysis.</li>
+                        <li>Deployed the segmentation model as a FastAPI inference endpoint on HuggingFace Spaces.</li>
+                        <li>Implemented end-to-end preprocessing, training, evaluation, and inference workflow.</li>
+                    </ul>
+                </div>
+
+                <!-- 2) Translations Annotation Tool -->
+                <div class="card">
+                    <h3>
+                        <a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface" target="_blank" rel="noopener noreferrer">
+                            Translations Annotation Tool
+                        </a>
+                    </h3>
+                    <p><em>TypeScript, Vite |
+                        <a href="https://oscararenas12.github.io/Translations-Annotation-Tool-Interface/" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                    </em></p>
+                    <ul>
+                        <li>Built a web-based review interface for teachers to evaluate and annotate Spanish translations generated by LLM models as part of the USC ICT research workflow.</li>
+                        <li>Developed with TypeScript and Vite for a fast, component-based single-page application with client-side data handling.</li>
+                    </ul>
+                </div>
+
+                <!-- 3) PONG -->
                 <div class="card">
                     <h3>
                         <a href="https://github.com/oscararenas12/pong-autogen-vscode" target="_blank" rel="noopener noreferrer">
@@ -170,24 +220,22 @@
                     </ul>
                 </div>
             
-                <!-- 2) LSTM Forecaster -->
+                <!-- 2) Daily Vending Machine Sales Forecasting -->
                 <div class="card">
                     <h3>
                         <a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster" target="_blank"
                             rel="noopener noreferrer">
-                            LSTM Vending Sales Forecaster
+                            Daily Vending Machine Sales Forecasting
                         </a>
                     </h3>
-                    <p><em>Graduate Machine Learning Course | Experimental Work</em></p>
+                    <p><em>Python, TensorFlow, Pandas | Spring 2025</em></p>
                     <ul>
-                        <li>Experimental forecasting using older time-series models (e.g., LSTM, ARIMA, baselines) to understand
-                            their behavior.</li>
-                        <li>Applied to proprietary sales data from two vending machines I own.</li>
-                        <li>Built to learn/evaluate legacy approaches as part of my graduate ML coursework.</li>
+                        <li>Analyzed time-series sales data from vending machines to identify daily and weekly purchasing trends.</li>
+                        <li>Evaluated model performance using RMSE, MAE, and MAPE metrics to assess forecast reliability.</li>
                     </ul>
                 </div>
             
-                <!-- 3) GenInv -->
+                <!-- 4) GenInv -->
                 <div class="card">
                     <h3>
                         <a href="https://github.com/oscararenas12/genInv" target="_blank" rel="noopener noreferrer">
