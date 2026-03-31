@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experience Idea 1 - Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #ffffff;
+            padding: 40px 48px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2a5db0;
+            margin-bottom: 16px;
+        }
+
+        /* Three column grid */
+        .exp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        /* Cards */
+        .exp-card {
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exp-card:hover {
+            border-color: #1a1a1a;
+        }
+
+        .exp-header {
+            padding: 14px 14px 10px;
+        }
+
+        .exp-title {
+            font-weight: 700;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .exp-org {
+            font-size: 12px;
+            color: #2a5db0;
+        }
+
+
+        .exp-toggle {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            color: #999;
+            transition: transform 0.2s;
+            float: right;
+        }
+
+        .exp-card.open .exp-toggle {
+            transform: rotate(90deg);
+        }
+
+        .exp-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .exp-card.open .exp-body {
+            max-height: 500px;
+        }
+
+        .exp-content {
+            padding: 0 14px 14px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .exp-content p {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .exp-tags {
+            margin-top: 10px;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .exp-tag {
+            font-size: 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            padding: 2px 6px;
+            border: 1px solid #ccc;
+            color: #666;
+        }
+
+        .exp-link {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #2a5db0;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Experience</h2>
+
+    <div class="exp-grid">
+        <div class="exp-card" onclick="this.classList.toggle('open')">
+            <div class="exp-header">
+                <span class="exp-toggle">▸</span>
+                <span class="exp-title">Data Infrastructure & Analysis Intern</span>
+                <span class="exp-org">Willog</span>
+
+            </div>
+            <div class="exp-body">
+                <div class="exp-content">
+                    <p>Designed and implemented a production Sales CRM web application. Built a Kanban-based lead management system backed by Google Sheets.</p>
+                    <div class="exp-tags">
+                        <span class="exp-tag">Google Sheets API</span>
+                        <span class="exp-tag">Gmail API</span>
+                        <span class="exp-tag">JavaScript</span>
+                        <span class="exp-tag">CRM</span>
+                    </div>
+                    <a href="#" class="exp-link">View project →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" onclick="this.classList.toggle('open')">
+            <div class="exp-header">
+                <span class="exp-toggle">▸</span>
+                <span class="exp-title">AI Research Intern</span>
+                <span class="exp-org">USC ICT</span>
+
+            </div>
+            <div class="exp-body">
+                <div class="exp-content">
+                    <p>Designed a workflow to analyze English science text datasets to evaluate LLMs on Spanish translations performance using readability metrics.</p>
+                    <div class="exp-tags">
+                        <span class="exp-tag">Python</span>
+                        <span class="exp-tag">AutoGen</span>
+                        <span class="exp-tag">Hugging Face</span>
+                        <span class="exp-tag">NLP</span>
+                    </div>
+                    <a href="#" class="exp-link">View project →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" onclick="this.classList.toggle('open')">
+            <div class="exp-header">
+                <span class="exp-toggle">▸</span>
+                <span class="exp-title">Data Science Intern</span>
+                <span class="exp-org">NNSA</span>
+
+            </div>
+            <div class="exp-body">
+                <div class="exp-content">
+                    <p>Created an ontology focused on Trustworthy, Effective, and Deployable AI (TED-AI). Developed a VS Code extension with D3.js visualizations.</p>
+                    <div class="exp-tags">
+                        <span class="exp-tag">Python</span>
+                        <span class="exp-tag">D3.js</span>
+                        <span class="exp-tag">LangChain</span>
+                        <span class="exp-tag">VS Code</span>
+                    </div>
+                    <a href="#" class="exp-link">View project →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

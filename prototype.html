@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Oscar Manuel Arenas</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -106,20 +107,12 @@
         }
 
         .main h2 {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            font-size: 22px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
             font-weight: 700;
             color: #2a5db0;
             margin-top: 32px;
             margin-bottom: 12px;
-        }
-
-        .main h3 {
-            font-size: 15px;
-            font-weight: 700;
-            text-decoration: underline;
-            margin-top: 20px;
-            margin-bottom: 4px;
         }
 
         .main p {
@@ -133,6 +126,114 @@
 
         .main a:hover {
             color: #555;
+        }
+
+        /* ========== Experience hover terminal ========== */
+        .work-item {
+            margin-bottom: 8px;
+        }
+
+        .work-role {
+            font-weight: 700;
+            font-size: 14px;
+            padding: 2px 0;
+            cursor: pointer;
+            transition: color 0.15s;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .work-role:hover {
+            color: #1a1a1a;
+        }
+
+        .work-arrow {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s, color 0.15s;
+            display: inline-block;
+        }
+
+        .work-role:hover .work-arrow {
+            color: #2a5db0;
+        }
+
+        .work-item.open .work-arrow {
+            transform: rotate(90deg);
+            color: #2a5db0;
+        }
+
+        .work-role a {
+            color: #2a5db0;
+            text-decoration: underline;
+        }
+
+        .work-role a:hover {
+            color: #1a1a1a;
+        }
+
+        .terminal-out {
+            font-size: 13px;
+            color: #555;
+            padding-left: 24px;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.2s ease;
+        }
+
+        .terminal-out .typed {
+            white-space: pre-wrap;
+        }
+
+        /* ========== Project cards ========== */
+        .exp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .exp-card {
+            border: 1px solid #e0e0e0;
+            padding: 16px;
+            transition: border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exp-card:hover {
+            border-color: #1a1a1a;
+        }
+
+        .exp-title {
+            font-weight: 700;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .exp-org {
+            font-size: 12px;
+            color: #2a5db0;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .exp-desc {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .exp-cta {
+            font-size: 12px;
+            font-family: 'IBM Plex Mono', monospace;
+            color: #2a5db0;
+            font-weight: 700;
+            text-decoration: underline;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -177,35 +278,68 @@
 
             <h2 class="type-block">Experience</h2>
 
-            <h3 class="type-block">Data Infrastructure & Analysis Intern - Willog (Dec 2025 - Jan 2026)</h3>
-            <p class="type-block">Designed and implemented a production Sales CRM web application.
-               Built a Kanban-based lead management system backed by Google Sheets.</p>
+            <div class="type-block">
+                <div class="work-item">
+                    <div class="work-role" data-info="Developed gaze analysis tools and built machine learning models for predicting pilot performance">
+                        <span class="work-arrow">▸</span><span>ML Researcher @ </span><a href="https://thed2lab.github.io/website/index.html" target="_blank" rel="noopener noreferrer">CSULB D2 Lab</a>
+                    </div>
+                    <div class="terminal-out"><span class="typed"></span></div>
+                </div>
 
-            <h3 class="type-block">AI Research Intern - USC ICT (May 2025 - Aug 2025)</h3>
-            <p class="type-block">Designed a workflow to analyze English science text datasets to evaluate LLMs
-               on Spanish translations performance using readability metrics.</p>
+                <div class="work-item">
+                    <div class="work-role" data-info="Built a production CRM with Kanban-style workflow for the sales team">
+                        <span class="work-arrow">▸</span><span>Data Infrastructure & Analysis Intern @ </span><a href="https://willog.io/en" target="_blank" rel="noopener noreferrer">Willog</a>
+                    </div>
+                    <div class="terminal-out"><span class="typed"></span></div>
+                </div>
 
-            <h3 class="type-block">Data Science Intern - NNSA (May 2024 - Apr 2025)</h3>
-            <p class="type-block">Created an ontology focused on Trustworthy, Effective, and Deployable AI (TED-AI)
-               to characterize current focus areas and gaps for DNN R&D.</p>
+                <div class="work-item">
+                    <div class="work-role" data-info="Multi AI Agent development for evaluation in education">
+                        <span class="work-arrow">▸</span><span>AI Research Intern @ </span><a href="https://ict.usc.edu/news/essays/improving-educational-access-with-ai-powered-language-tools/" target="_blank" rel="noopener noreferrer">USC ICT</a>
+                    </div>
+                    <div class="terminal-out"><span class="typed"></span></div>
+                </div>
+
+                <div class="work-item">
+                    <div class="work-role" data-info="Created an ontology based on Trustworthy, Effective, and Deployable AI">
+                        <span class="work-arrow">▸</span><span>Data Science Intern @ </span><a href="https://www.energy.gov/nnsa/nonproliferation" target="_blank" rel="noopener noreferrer">NNSA</a>
+                    </div>
+                    <div class="terminal-out"><span class="typed"></span></div>
+                </div>
+            </div>
 
             <h2 class="type-block">Projects</h2>
 
-            <h3 class="type-block"><a href="https://github.com/oscararenas12/golf-course-segmentation">Golf Course Segmentation</a></h3>
-            <p class="type-block">Trained a custom U-Net model for 6-class aerial image segmentation.
-               Built a Next.js web app with Google Maps API integration.</p>
+            <div class="exp-grid type-block">
+                <div class="exp-card">
+                    <span class="exp-title">Golf Course Segmentation</span>
+                    <span class="exp-org">Python, TensorFlow, Next.js, FastAPI</span>
+                    <p class="exp-desc">Trained a custom U-Net model for 6-class aerial image segmentation. Built a Next.js web app with Google Maps API integration.</p>
+                    <a href="https://github.com/oscararenas12/golf-course-segmentation" class="exp-cta" target="_blank" rel="noopener noreferrer">View project →</a>
+                </div>
 
-            <h3 class="type-block"><a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface">Translations Annotation Tool</a></h3>
-            <p class="type-block">Web-based review interface for teachers to evaluate and annotate
-               Spanish translations generated by LLM models.</p>
+                <div class="exp-card">
+                    <span class="exp-title">Translations Annotation Tool</span>
+                    <span class="exp-org">TypeScript, Vite</span>
+                    <p class="exp-desc">Web-based review interface for teachers to evaluate and annotate Spanish translations generated by LLM models.</p>
+                    <a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface" class="exp-cta" target="_blank" rel="noopener noreferrer">View project →</a>
+                </div>
 
-            <h3 class="type-block"><a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster">Daily Vending Machine Sales Forecasting</a></h3>
-            <p class="type-block">Analyzed time-series sales data from vending machines using LSTM networks
-               to identify daily and weekly purchasing trends.</p>
+                <div class="exp-card">
+                    <span class="exp-title">Daily Vending Machine Sales Forecasting</span>
+                    <span class="exp-org">Python, TensorFlow, Pandas</span>
+                    <p class="exp-desc">Analyzed time-series sales data from vending machines using LSTM networks to identify daily and weekly purchasing trends.</p>
+                    <a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster" class="exp-cta" target="_blank" rel="noopener noreferrer">View project →</a>
+                </div>
+            </div>
         </main>
     </div>
 
     <script>
+        window.addEventListener('scroll', () => {
+            if (!document.body.classList.contains('ready')) window.scrollTo(0, 0);
+        });
+
         const header = document.getElementById('header');
         const loadingPercent = document.getElementById('loadingPercent');
         const preOscar = document.getElementById('preOscar');
@@ -292,6 +426,57 @@
                 document.body.classList.add('ready');
             }, delay + 200);
         }
+        // ===== Experience hover/click terminal =====
+        document.querySelectorAll('.work-item').forEach(item => {
+            const role = item.querySelector('.work-role');
+            const terminal = item.querySelector('.terminal-out');
+            const typedEl = terminal.querySelector('.typed');
+            let typeTimer = null;
+            let charIndex = 0;
+            let locked = false;
+
+            function openAndType() {
+                clearInterval(typeTimer);
+                const text = role.dataset.info;
+                charIndex = 0;
+                typedEl.textContent = '';
+                terminal.style.height = '28px';
+                item.classList.add('open');
+
+                typeTimer = setInterval(() => {
+                    if (charIndex < text.length) {
+                        typedEl.textContent += text[charIndex];
+                        charIndex++;
+                    } else {
+                        clearInterval(typeTimer);
+                        typeTimer = null;
+                    }
+                }, 25);
+            }
+
+            function close() {
+                clearInterval(typeTimer);
+                typeTimer = null;
+                typedEl.textContent = '';
+                terminal.style.height = '0';
+                item.classList.remove('open');
+            }
+
+            role.addEventListener('mouseenter', () => {
+                if (!locked && document.body.classList.contains('ready')) {
+                    locked = true;
+                    openAndType();
+                }
+            });
+
+            role.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') return;
+                if (locked) {
+                    locked = false;
+                    close();
+                }
+            });
+        });
     </script>
 </body>
 </html>

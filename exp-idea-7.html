@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experience Idea 7 - Hover Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #ffffff;
+            padding: 40px 48px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2a5db0;
+            margin-bottom: 20px;
+        }
+
+        .work-item {
+            margin-bottom: 8px;
+        }
+
+        .work-role {
+            font-weight: 700;
+            font-size: 14px;
+            padding: 2px 0;
+            cursor: pointer;
+            transition: color 0.15s;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .work-role:hover {
+            color: #1a1a1a;
+        }
+
+        .work-arrow {
+            font-size: 12px;
+            color: #999;
+            transition: transform 0.2s, color 0.15s;
+            display: inline-block;
+        }
+
+        .work-role:hover .work-arrow {
+            color: #2a5db0;
+        }
+
+        .work-item.open .work-arrow {
+            transform: rotate(90deg);
+            color: #2a5db0;
+        }
+
+
+        .work-role a {
+            color: #2a5db0;
+            text-decoration: underline;
+        }
+
+        .work-role a:hover {
+            color: #1a1a1a;
+        }
+
+        .terminal-out {
+            font-size: 13px;
+            color: #555;
+            padding-left: 24px;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.2s ease;
+        }
+
+        .terminal-out .prompt {
+            color: #999;
+        }
+
+        .terminal-out .typed {
+            white-space: pre-wrap;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Experience</h2>
+
+    <div class="work-item">
+        <div class="work-role" data-info="Developed gaze analysis tools and built machine learning models for predicting pilot performance">
+            <span class="work-arrow">▸</span><span>ML Researcher @ </span><a href="https://thed2lab.github.io/website/index.html" target="_blank" rel="noopener noreferrer">CSULB D2 Lab</a>
+        </div>
+        <div class="terminal-out"><span class="typed"></span></div>
+    </div>
+
+    <div class="work-item">
+        <div class="work-role" data-info="Built a production CRM with Kanban-style workflow for the sales team">
+            <span class="work-arrow">▸</span><span>Data Infrastructure & Analysis Intern @ </span><a href="https://willog.io/en" target="_blank" rel="noopener noreferrer">Willog</a>
+        </div>
+        <div class="terminal-out"><span class="typed"></span></div>
+    </div>
+
+    <div class="work-item">
+        <div class="work-role" data-info="Multi AI Agent development for evaluation in education">
+            <span class="work-arrow">▸</span><span>AI Research Intern @ </span><a href="https://ict.usc.edu/news/essays/improving-educational-access-with-ai-powered-language-tools/" target="_blank" rel="noopener noreferrer">USC ICT</a>
+        </div>
+        <div class="terminal-out"><span class="typed"></span></div>
+    </div>
+
+    <div class="work-item">
+        <div class="work-role" data-info="Created an ontology based on Trustworthy, Effective, and Deployable AI">
+            <span class="work-arrow">▸</span><span>Data Science Intern @ </span><a href="https://www.energy.gov/nnsa/nonproliferation" target="_blank" rel="noopener noreferrer">NNSA</a>
+        </div>
+        <div class="terminal-out"><span class="typed"></span></div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.work-item').forEach(item => {
+            const role = item.querySelector('.work-role');
+            const terminal = item.querySelector('.terminal-out');
+            const typedEl = terminal.querySelector('.typed');
+            let typeTimer = null;
+            let charIndex = 0;
+            let locked = false;
+
+            function openAndType() {
+                clearInterval(typeTimer);
+                const text = role.dataset.info;
+                charIndex = 0;
+                typedEl.textContent = '';
+                terminal.style.height = '28px';
+                item.classList.add('open');
+
+                typeTimer = setInterval(() => {
+                    if (charIndex < text.length) {
+                        typedEl.textContent += text[charIndex];
+                        charIndex++;
+                    } else {
+                        clearInterval(typeTimer);
+                        typeTimer = null;
+                    }
+                }, 25);
+            }
+
+            function close() {
+                clearInterval(typeTimer);
+                typeTimer = null;
+                typedEl.textContent = '';
+                terminal.style.height = '0';
+                item.classList.remove('open');
+            }
+
+            // Hover: open and lock
+            role.addEventListener('mouseenter', () => {
+                if (!locked) {
+                    locked = true;
+                    openAndType();
+                }
+            });
+
+            // Click: close
+            role.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') return;
+
+                if (locked) {
+                    locked = false;
+                    close();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
