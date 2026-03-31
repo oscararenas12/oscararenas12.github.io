@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Oscar Manuel Arenas</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #ffffff;
+            padding: 40px 48px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        /* Centered header block */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        /* ASCII hero */
+        .ascii-hero {
+            display: inline-flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .ascii-hero pre {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 700;
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.2;
+            color: #1a1a1a;
+            white-space: pre;
+            text-align: left;
+            overflow: hidden;
+            width: 0;
+        }
+
+        .ascii-hero pre.revealed {
+            overflow: visible;
+        }
+
+        /* Loading percent - sits below the name */
+        .loading-percent {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            color: #999;
+            font-weight: 500;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .loading-percent.done {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Nav links */
+        .header-nav {
+            font-size: 13px;
+            display: block;
+            opacity: 0;
+        }
+
+        .header-nav.revealed {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .header-nav a {
+            color: #1a1a1a;
+            text-decoration: underline;
+            margin: 0 12px;
+        }
+
+        .header-nav a:hover {
+            color: #555;
+        }
+
+        /* Main content - each element types in */
+        .main .type-in {
+            overflow: hidden;
+            width: 0;
+            white-space: nowrap;
+        }
+
+        .main .type-in.revealed {
+            overflow: visible;
+            white-space: normal;
+        }
+
+        .main .type-block {
+            opacity: 0;
+        }
+
+        .main .type-block.revealed {
+            opacity: 1;
+        }
+
+        .main h2 {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #2a5db0;
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+
+        .main h3 {
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: underline;
+            margin-top: 20px;
+            margin-bottom: 4px;
+        }
+
+        .main p {
+            margin-bottom: 8px;
+        }
+
+        .main a {
+            color: #1a1a1a;
+            text-decoration: underline;
+        }
+
+        .main a:hover {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="ascii-hero">
+            <pre id="preOscar">   ___
+  / _ \ ___  ___ __ _ _ __
+ | | | / __|/ __/ _` | '__|
+ | |_| \__ \ (_| (_| | |
+  \___/|___/\___\__,_|_|</pre>
+            <pre id="preArenas">     _
+    / \   _ __ ___ _ __   __ _ ___
+   / _ \ | '__/ _ \ '_ \ / _` / __|
+  / ___ \| | |  __/ | | | (_| \__ \
+ /_/   \_\_|  \___|_| |_|\__,_|___/</pre>
+        </div>
+        <div class="loading-percent" id="loadingPercent">0%</div>
+        <nav class="header-nav" id="headerNav">
+            <a href="resume/resume_OA.pdf">Resume</a>
+            <a href="https://github.com/oscararenas12">GitHub</a>
+            <a href="https://www.linkedin.com/in/oscar-arenas01/">LinkedIn</a>
+        </nav>
+    </div>
+
+    <main class="main" id="mainContent">
+        <p class="type-block">
+            I'm a Computer Science graduate student at California State University, Long Beach.
+            I focus on machine learning and software engineering.
+        </p>
+
+        <p class="type-block">
+            I'm starting my graduate thesis as a Machine Learning Research Assistant
+            with the <a href="https://thed2lab.github.io/website/lab.html">D2 Lab</a>
+            at CSULB under <a href="#">Dr. Bo Fu</a>.
+        </p>
+
+        <p class="type-block">
+            Here's what I've been working on:
+        </p>
+
+        <h2 class="type-block">Experience</h2>
+
+        <h3 class="type-block">Data Infrastructure & Analysis Intern - Willog (Dec 2025 - Jan 2026)</h3>
+        <p class="type-block">Designed and implemented a production Sales CRM web application.
+           Built a Kanban-based lead management system backed by Google Sheets.</p>
+
+        <h3 class="type-block">AI Research Intern - USC ICT (May 2025 - Aug 2025)</h3>
+        <p class="type-block">Designed a workflow to analyze English science text datasets to evaluate LLMs
+           on Spanish translations performance using readability metrics.</p>
+
+        <h3 class="type-block">Data Science Intern - NNSA (May 2024 - Apr 2025)</h3>
+        <p class="type-block">Created an ontology focused on Trustworthy, Effective, and Deployable AI (TED-AI)
+           to characterize current focus areas and gaps for DNN R&D.</p>
+
+        <h2 class="type-block">Projects</h2>
+
+        <h3 class="type-block"><a href="https://github.com/oscararenas12/golf-course-segmentation">Golf Course Segmentation</a></h3>
+        <p class="type-block">Trained a custom U-Net model for 6-class aerial image segmentation.
+           Built a Next.js web app with Google Maps API integration.</p>
+
+        <h3 class="type-block"><a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface">Translations Annotation Tool</a></h3>
+        <p class="type-block">Web-based review interface for teachers to evaluate and annotate
+           Spanish translations generated by LLM models.</p>
+
+        <h3 class="type-block"><a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster">Daily Vending Machine Sales Forecasting</a></h3>
+        <p class="type-block">Analyzed time-series sales data from vending machines using LSTM networks
+           to identify daily and weekly purchasing trends.</p>
+    </main>
+
+    <script>
+        const loadingPercent = document.getElementById('loadingPercent');
+        const preOscar = document.getElementById('preOscar');
+        const preArenas = document.getElementById('preArenas');
+        const headerNav = document.getElementById('headerNav');
+        const blocks = document.querySelectorAll('.type-block');
+
+        const oscarFullWidth = 227;
+        const arenasFullWidth = 294;
+        const totalNameWidth = oscarFullWidth + arenasFullWidth;
+
+        let progress = 0;
+        const duration = 3000; // 3 seconds for name loading
+        const stepTime = 30;
+        const steps = duration / stepTime;
+        const increment = 100 / steps;
+
+        // Phase 1: Name is the loading bar
+        const loadInterval = setInterval(() => {
+            progress += increment;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadInterval);
+                loadingPercent.textContent = '100%';
+
+                // Finish name reveal
+                preOscar.style.width = oscarFullWidth + 'px';
+                preArenas.style.width = arenasFullWidth + 'px';
+
+                setTimeout(onNameDone, 400);
+                return;
+            }
+
+            loadingPercent.textContent = Math.floor(progress) + '%';
+
+            // Map progress to total name width
+            const revealedPixels = (progress / 100) * totalNameWidth;
+
+            if (revealedPixels <= oscarFullWidth) {
+                preOscar.style.width = revealedPixels + 'px';
+                preArenas.style.width = '0px';
+            } else {
+                preOscar.style.width = oscarFullWidth + 'px';
+                preArenas.style.width = (revealedPixels - oscarFullWidth) + 'px';
+            }
+        }, stepTime);
+
+        // Phase 2: Name done, type in everything else
+        function onNameDone() {
+            preOscar.classList.add('revealed');
+            preArenas.classList.add('revealed');
+
+            // Fade out percentage
+            loadingPercent.classList.add('done');
+
+            // Reveal nav
+            setTimeout(() => {
+                headerNav.classList.add('revealed');
+            }, 300);
+
+            // Reveal content blocks one by one
+            let delay = 700;
+            blocks.forEach((block, i) => {
+                setTimeout(() => {
+                    block.classList.add('revealed');
+                }, delay);
+                delay += 80;
+            });
+        }
+
+    </script>
+</body>
+</html>
