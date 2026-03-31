@@ -14,23 +14,31 @@
             line-height: 1.7;
             color: #1a1a1a;
             background: #ffffff;
+            overflow: hidden;
+        }
+
+        body.ready {
+            overflow: auto;
+        }
+
+        /* ========== Page wrapper ========== */
+        .page {
             padding: 40px 48px;
             max-width: 960px;
             margin: 0 auto;
         }
 
-        /* Centered header block */
+        /* ========== Header ========== */
         .header {
             text-align: center;
             margin-bottom: 32px;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
-        /* ASCII hero */
         .ascii-hero {
             display: inline-flex;
             gap: 12px;
-            margin-bottom: 12px;
-            position: relative;
+            margin-bottom: 4px;
         }
 
         .ascii-hero pre {
@@ -50,23 +58,19 @@
             overflow: visible;
         }
 
-        /* Loading percent - sits below the name */
+        /* Loading percent */
         .loading-percent {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 13px;
             color: #999;
             font-weight: 500;
-            margin-top: 8px;
-            margin-bottom: 12px;
-            opacity: 1;
+            margin-top: 4px;
+            margin-bottom: 0;
             transition: opacity 0.4s ease;
         }
 
         .loading-percent.done {
             opacity: 0;
-            height: 0;
-            margin: 0;
-            overflow: hidden;
         }
 
         /* Nav links */
@@ -74,6 +78,7 @@
             font-size: 13px;
             display: block;
             opacity: 0;
+            margin-top: 8px;
         }
 
         .header-nav.revealed {
@@ -91,18 +96,7 @@
             color: #555;
         }
 
-        /* Main content - each element types in */
-        .main .type-in {
-            overflow: hidden;
-            width: 0;
-            white-space: nowrap;
-        }
-
-        .main .type-in.revealed {
-            overflow: visible;
-            white-space: normal;
-        }
-
+        /* ========== Main content ========== */
         .main .type-block {
             opacity: 0;
         }
@@ -143,73 +137,76 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="ascii-hero">
-            <pre id="preOscar">   ___
+    <div class="page">
+        <div class="header" id="header">
+            <div class="ascii-hero">
+                <pre id="preOscar">   ___
   / _ \ ___  ___ __ _ _ __
  | | | / __|/ __/ _` | '__|
  | |_| \__ \ (_| (_| | |
   \___/|___/\___\__,_|_|</pre>
-            <pre id="preArenas">     _
+                <pre id="preArenas">     _
     / \   _ __ ___ _ __   __ _ ___
    / _ \ | '__/ _ \ '_ \ / _` / __|
   / ___ \| | |  __/ | | | (_| \__ \
  /_/   \_\_|  \___|_| |_|\__,_|___/</pre>
+            </div>
+            <div class="loading-percent" id="loadingPercent">0%</div>
+            <nav class="header-nav" id="headerNav">
+                <a href="resume/resume_OA.pdf">Resume</a>
+                <a href="https://github.com/oscararenas12">GitHub</a>
+                <a href="https://www.linkedin.com/in/oscar-arenas01/">LinkedIn</a>
+            </nav>
         </div>
-        <div class="loading-percent" id="loadingPercent">0%</div>
-        <nav class="header-nav" id="headerNav">
-            <a href="resume/resume_OA.pdf">Resume</a>
-            <a href="https://github.com/oscararenas12">GitHub</a>
-            <a href="https://www.linkedin.com/in/oscar-arenas01/">LinkedIn</a>
-        </nav>
+
+        <main class="main" id="mainContent">
+            <p class="type-block">
+                I'm a Computer Science graduate student at California State University, Long Beach.
+                I focus on machine learning and software engineering.
+            </p>
+
+            <p class="type-block">
+                I'm starting my graduate thesis as a Machine Learning Research Assistant
+                with the <a href="https://thed2lab.github.io/website/lab.html">D2 Lab</a>
+                at CSULB under <a href="#">Dr. Bo Fu</a>.
+            </p>
+
+            <p class="type-block">
+                Here's what I've been working on:
+            </p>
+
+            <h2 class="type-block">Experience</h2>
+
+            <h3 class="type-block">Data Infrastructure & Analysis Intern - Willog (Dec 2025 - Jan 2026)</h3>
+            <p class="type-block">Designed and implemented a production Sales CRM web application.
+               Built a Kanban-based lead management system backed by Google Sheets.</p>
+
+            <h3 class="type-block">AI Research Intern - USC ICT (May 2025 - Aug 2025)</h3>
+            <p class="type-block">Designed a workflow to analyze English science text datasets to evaluate LLMs
+               on Spanish translations performance using readability metrics.</p>
+
+            <h3 class="type-block">Data Science Intern - NNSA (May 2024 - Apr 2025)</h3>
+            <p class="type-block">Created an ontology focused on Trustworthy, Effective, and Deployable AI (TED-AI)
+               to characterize current focus areas and gaps for DNN R&D.</p>
+
+            <h2 class="type-block">Projects</h2>
+
+            <h3 class="type-block"><a href="https://github.com/oscararenas12/golf-course-segmentation">Golf Course Segmentation</a></h3>
+            <p class="type-block">Trained a custom U-Net model for 6-class aerial image segmentation.
+               Built a Next.js web app with Google Maps API integration.</p>
+
+            <h3 class="type-block"><a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface">Translations Annotation Tool</a></h3>
+            <p class="type-block">Web-based review interface for teachers to evaluate and annotate
+               Spanish translations generated by LLM models.</p>
+
+            <h3 class="type-block"><a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster">Daily Vending Machine Sales Forecasting</a></h3>
+            <p class="type-block">Analyzed time-series sales data from vending machines using LSTM networks
+               to identify daily and weekly purchasing trends.</p>
+        </main>
     </div>
 
-    <main class="main" id="mainContent">
-        <p class="type-block">
-            I'm a Computer Science graduate student at California State University, Long Beach.
-            I focus on machine learning and software engineering.
-        </p>
-
-        <p class="type-block">
-            I'm starting my graduate thesis as a Machine Learning Research Assistant
-            with the <a href="https://thed2lab.github.io/website/lab.html">D2 Lab</a>
-            at CSULB under <a href="#">Dr. Bo Fu</a>.
-        </p>
-
-        <p class="type-block">
-            Here's what I've been working on:
-        </p>
-
-        <h2 class="type-block">Experience</h2>
-
-        <h3 class="type-block">Data Infrastructure & Analysis Intern - Willog (Dec 2025 - Jan 2026)</h3>
-        <p class="type-block">Designed and implemented a production Sales CRM web application.
-           Built a Kanban-based lead management system backed by Google Sheets.</p>
-
-        <h3 class="type-block">AI Research Intern - USC ICT (May 2025 - Aug 2025)</h3>
-        <p class="type-block">Designed a workflow to analyze English science text datasets to evaluate LLMs
-           on Spanish translations performance using readability metrics.</p>
-
-        <h3 class="type-block">Data Science Intern - NNSA (May 2024 - Apr 2025)</h3>
-        <p class="type-block">Created an ontology focused on Trustworthy, Effective, and Deployable AI (TED-AI)
-           to characterize current focus areas and gaps for DNN R&D.</p>
-
-        <h2 class="type-block">Projects</h2>
-
-        <h3 class="type-block"><a href="https://github.com/oscararenas12/golf-course-segmentation">Golf Course Segmentation</a></h3>
-        <p class="type-block">Trained a custom U-Net model for 6-class aerial image segmentation.
-           Built a Next.js web app with Google Maps API integration.</p>
-
-        <h3 class="type-block"><a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface">Translations Annotation Tool</a></h3>
-        <p class="type-block">Web-based review interface for teachers to evaluate and annotate
-           Spanish translations generated by LLM models.</p>
-
-        <h3 class="type-block"><a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster">Daily Vending Machine Sales Forecasting</a></h3>
-        <p class="type-block">Analyzed time-series sales data from vending machines using LSTM networks
-           to identify daily and weekly purchasing trends.</p>
-    </main>
-
     <script>
+        const header = document.getElementById('header');
         const loadingPercent = document.getElementById('loadingPercent');
         const preOscar = document.getElementById('preOscar');
         const preArenas = document.getElementById('preArenas');
@@ -220,31 +217,48 @@
         const arenasFullWidth = 294;
         const totalNameWidth = oscarFullWidth + arenasFullWidth;
 
+        // Calculate how far to push header down to center it
+        function getCenterOffset() {
+            const headerRect = header.getBoundingClientRect();
+            const headerCenter = headerRect.top + headerRect.height / 2;
+            const viewportCenter = window.innerHeight / 2;
+            return viewportCenter - headerCenter;
+        }
+
+        // Start centered
+        const offset = getCenterOffset();
+        header.style.transform = 'translateY(' + offset + 'px)';
+
         let progress = 0;
-        const duration = 3000; // 3 seconds for name loading
+        let hasSettled = false;
+        const duration = 3000;
         const stepTime = 30;
         const steps = duration / stepTime;
         const increment = 100 / steps;
 
-        // Phase 1: Name is the loading bar
         const loadInterval = setInterval(() => {
             progress += increment;
+
+            // At ~80%, animate header back to its natural position
+            if (progress >= 80 && !hasSettled) {
+                hasSettled = true;
+                header.style.transform = 'translateY(0)';
+            }
+
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(loadInterval);
                 loadingPercent.textContent = '100%';
 
-                // Finish name reveal
                 preOscar.style.width = oscarFullWidth + 'px';
                 preArenas.style.width = arenasFullWidth + 'px';
 
-                setTimeout(onNameDone, 400);
+                setTimeout(onNameDone, 500);
                 return;
             }
 
             loadingPercent.textContent = Math.floor(progress) + '%';
 
-            // Map progress to total name width
             const revealedPixels = (progress / 100) * totalNameWidth;
 
             if (revealedPixels <= oscarFullWidth) {
@@ -256,29 +270,28 @@
             }
         }, stepTime);
 
-        // Phase 2: Name done, type in everything else
         function onNameDone() {
             preOscar.classList.add('revealed');
             preArenas.classList.add('revealed');
 
-            // Fade out percentage
             loadingPercent.classList.add('done');
 
-            // Reveal nav
             setTimeout(() => {
                 headerNav.classList.add('revealed');
             }, 300);
 
-            // Reveal content blocks one by one
-            let delay = 700;
-            blocks.forEach((block, i) => {
+            let delay = 600;
+            blocks.forEach((block) => {
                 setTimeout(() => {
                     block.classList.add('revealed');
                 }, delay);
                 delay += 80;
             });
-        }
 
+            setTimeout(() => {
+                document.body.classList.add('ready');
+            }, delay + 200);
+        }
     </script>
 </body>
 </html>
