@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Oscar Manuel Arenas</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
-    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -186,6 +186,207 @@
             white-space: pre-wrap;
         }
 
+        /* Inline graph preview */
+        .graph-inline {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.4s ease;
+            margin-left: 0;
+            margin-top: 4px;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .graph-inline.active {
+            height: 300px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .graph-inline svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: #fafafa;
+        }
+
+        .graph-inline .graph-expand {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            cursor: pointer;
+            z-index: 10;
+            background: none;
+            border: none;
+            padding: 4px;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .graph-inline .graph-expand:hover {
+            opacity: 1;
+        }
+
+        .graph-inline .graph-expand svg {
+            width: 16px;
+            height: 16px;
+            fill: #1a1a1a;
+        }
+
+        /* Fullscreen overlay panel */
+        .graph-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .graph-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .graph-overlay .overlay-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+
+        .graph-overlay .overlay-panel {
+            position: relative;
+            width: 55vw;
+            height: 70vh;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .graph-overlay.active .overlay-panel {
+            transform: scale(1);
+        }
+
+        .graph-overlay .overlay-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 10;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .graph-overlay .overlay-close:hover {
+            opacity: 1;
+        }
+
+        .graph-overlay .overlay-close svg {
+            width: 20px;
+            height: 20px;
+            fill: #1a1a1a;
+        }
+
+        .graph-overlay svg.overlay-graph {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .overlay-controls {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .overlay-controls .color-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .overlay-controls input[type="color"] {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px #ccc;
+        }
+
+        .overlay-controls input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; border: none; }
+        .overlay-controls input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+        .overlay-filters {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 50px;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .overlay-filters .o-filter-btn {
+            padding: 3px 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.15s;
+        }
+
+        .overlay-filters .o-filter-btn:hover {
+            border-color: #999;
+        }
+
+        .overlay-filters .o-filter-btn.active {
+            background: #2a5db0;
+            color: #fff;
+            border-color: #2a5db0;
+        }
+
+        #graph-tooltip {
+            position: fixed;
+            visibility: hidden;
+            background: #1e1e1e;
+            color: #ccc;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'IBM Plex Mono', monospace;
+            pointer-events: none;
+            max-width: 220px;
+            word-wrap: break-word;
+            z-index: 1000;
+            line-height: 1.4;
+        }
+
         /* ========== Project cards ========== */
         .exp-grid {
             display: grid;
@@ -227,13 +428,36 @@
             margin-bottom: 10px;
         }
 
+        .exp-links {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .exp-cta {
             font-size: 12px;
             font-family: 'IBM Plex Mono', monospace;
             color: #2a5db0;
             font-weight: 700;
             text-decoration: underline;
-            margin-top: auto;
+        }
+
+        .exp-github {
+            display: inline-block;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .exp-github:hover {
+            opacity: 1;
+        }
+
+        .exp-github svg {
+            width: 16px;
+            height: 16px;
+            fill: #1a1a1a;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -300,11 +524,17 @@
                     <div class="terminal-out"><span class="typed"></span></div>
                 </div>
 
-                <div class="work-item">
+                <div class="work-item" id="nnsa-item">
                     <div class="work-role" data-info="Created an ontology based on Trustworthy, Effective, and Deployable AI">
                         <span class="work-arrow">▸</span><span>Data Science Intern @ </span><a href="https://www.energy.gov/nnsa/nonproliferation" target="_blank" rel="noopener noreferrer">NNSA</a>
                     </div>
                     <div class="terminal-out"><span class="typed"></span></div>
+                    <div class="graph-inline" id="graphInline">
+                        <button class="graph-expand" id="expandBtn" title="Expand">
+                            <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                        </button>
+                        <svg id="miniGraph"></svg>
+                    </div>
                 </div>
             </div>
 
@@ -315,21 +545,37 @@
                     <span class="exp-title">Golf Course Segmentation</span>
                     <span class="exp-org">Python, TensorFlow, Next.js, FastAPI</span>
                     <p class="exp-desc">Trained a custom U-Net model for 6-class aerial image segmentation. Built a Next.js web app with Google Maps API integration.</p>
-                    <a href="https://github.com/oscararenas12/golf-course-segmentation" class="exp-cta" target="_blank" rel="noopener noreferrer">View project →</a>
+                    <div class="exp-links">
+                        <a href="https://www.csulbgolfcoursedata.com/" class="exp-cta" target="_blank" rel="noopener noreferrer">Live site →</a>
+                        <a href="https://github.com/oscararenas12/golf-course-segmentation" class="exp-github" target="_blank" rel="noopener noreferrer" title="GitHub repo"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+                    </div>
                 </div>
 
                 <div class="exp-card">
                     <span class="exp-title">Translations Annotation Tool</span>
-                    <span class="exp-org">TypeScript, Vite</span>
+                    <span class="exp-org">TypeScript, React, Vite, Supabase</span>
                     <p class="exp-desc">Web-based review interface for teachers to evaluate and annotate Spanish translations generated by LLM models.</p>
-                    <a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface" class="exp-cta" target="_blank" rel="noopener noreferrer">View project →</a>
+                    <div class="exp-links">
+                        <a href="https://oscararenas12.github.io/Translations-Annotation-Tool-Interface/" class="exp-cta" target="_blank" rel="noopener noreferrer">Live site →</a>
+                        <a href="https://github.com/oscararenas12/Translations-Annotation-Tool-Interface" class="exp-github" target="_blank" rel="noopener noreferrer" title="GitHub repo"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+                    </div>
                 </div>
 
                 <div class="exp-card">
                     <span class="exp-title">Daily Vending Machine Sales Forecasting</span>
                     <span class="exp-org">Python, TensorFlow, Pandas</span>
                     <p class="exp-desc">Analyzed time-series sales data from vending machines using LSTM networks to identify daily and weekly purchasing trends.</p>
-                    <a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster" class="exp-cta" target="_blank" rel="noopener noreferrer">View project →</a>
+                    <div class="exp-links">
+                        <a href="https://github.com/oscararenas12/LSTM-VendingSalesForecaster" class="exp-github" target="_blank" rel="noopener noreferrer" title="GitHub repo"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+                    </div>
+                </div>
+                <div class="exp-card">
+                    <span class="exp-title">AutoGen Pong (VS Code Extension)</span>
+                    <span class="exp-org">JavaScript, Python, Flask, AutoGen</span>
+                    <p class="exp-desc">Classic Pong game inside VS Code where paddles are controlled by AI Agents</p>
+                    <div class="exp-links">
+                        <a href="https://github.com/oscararenas12/pong-autogen-vscode" class="exp-github" target="_blank" rel="noopener noreferrer" title="GitHub repo"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+                    </div>
                 </div>
             </div>
         </main>
@@ -476,6 +722,448 @@
                     close();
                 }
             });
+        });
+        // ===== NNSA inline graph =====
+        let graphRendered = false;
+        const graphInline = document.getElementById('graphInline');
+        const nnsaItem = document.getElementById('nnsa-item');
+
+        // Watch for NNSA opening — show graph after text types
+        const nnsaObserver = new MutationObserver(() => {
+            if (nnsaItem.classList.contains('open')) {
+                setTimeout(() => {
+                    graphInline.classList.add('active');
+                    if (!graphRendered) {
+                        graphRendered = true;
+                        loadMiniGraph();
+                    }
+                }, 800);
+            } else {
+                graphInline.classList.remove('active');
+            }
+        });
+        nnsaObserver.observe(nnsaItem, { attributes: true, attributeFilter: ['class'] });
+
+        function loadMiniGraph() {
+            fetch('tedai/ontology.json')
+                .then(r => r.json())
+                .then(raw => {
+                    // Top-level nodes: Attribute + its 3 children + their direct children
+                    const topIds = new Set(['Attribute', 'Trustworthy', 'Effective', 'Deployable']);
+                    const allEdges = raw.edges || [];
+                    allEdges.forEach(e => {
+                        if (topIds.has(e.source)) topIds.add(e.target);
+                    });
+
+                    // Limit to ~18 nodes
+                    const keepIds = new Set();
+                    for (const id of topIds) {
+                        keepIds.add(id);
+                        if (keepIds.size >= 18) break;
+                    }
+
+                    const nodes = (raw.nodes || [])
+                        .filter(n => keepIds.has(n.id))
+                        .map(n => ({
+                            id: n.id,
+                            label: n.label || n.id,
+                            description: n.description || n.definition || ''
+                        }));
+
+                    const links = allEdges
+                        .filter(e => keepIds.has(e.source) && keepIds.has(e.target))
+                        .map(e => ({
+                            source: e.source,
+                            target: e.target,
+                            relationship: Array.isArray(e.relationship) ? e.relationship.join(', ') : e.relationship
+                        }));
+
+                    renderMiniGraph({ nodes, links });
+                });
+        }
+
+        function renderMiniGraph(data) {
+            const container = document.getElementById('graphInline');
+            const w = container.clientWidth || 860;
+            const h = 300;
+
+            const svg = d3.select('#miniGraph')
+                .attr('width', w)
+                .attr('height', h);
+
+            const g = svg.append('g');
+
+            const tooltip = document.getElementById('graph-tooltip');
+
+            const simulation = d3.forceSimulation(data.nodes)
+                .force('link', d3.forceLink(data.links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-400))
+                .force('center', d3.forceCenter(w / 2, h / 2))
+                .force('x', d3.forceX(w / 2).strength(0.05))
+                .force('y', d3.forceY(h / 2).strength(0.1));
+
+            const link = g.append('g').selectAll('line')
+                .data(data.links).enter().append('line')
+                .attr('stroke', '#ccc').attr('stroke-width', 0.5)
+                .attr('opacity', 0);
+
+            const node = g.append('g').selectAll('circle')
+                .data(data.nodes).enter().append('circle')
+                .attr('r', 7)
+                .attr('fill', '#2a5db0')
+                .attr('opacity', 0)
+                .call(d3.drag()
+                    .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+                    .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+                    .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+                )
+                .on('mouseover', (event, d) => {
+                    tooltip.innerHTML = '<strong>' + d.label + '</strong>' + (d.description ? '<br>' + d.description : '');
+                    tooltip.style.visibility = 'visible';
+                })
+                .on('mousemove', (event) => {
+                    tooltip.style.top = (event.clientY + 12) + 'px';
+                    tooltip.style.left = (event.clientX + 12) + 'px';
+                })
+                .on('mouseout', () => { tooltip.style.visibility = 'hidden'; });
+
+            const label = g.append('g').selectAll('text')
+                .data(data.nodes).enter().append('text')
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#666')
+                .attr('font-size', '7px')
+                .attr('font-family', 'IBM Plex Mono, monospace')
+                .attr('pointer-events', 'none')
+                .attr('opacity', 0)
+                .text(d => d.label);
+
+            // Animated entrance — nodes fade in one by one
+            node.each(function(d, i) {
+                d3.select(this).transition()
+                    .delay(i * 30)
+                    .duration(400)
+                    .attr('opacity', 0.85);
+            });
+
+            label.each(function(d, i) {
+                d3.select(this).transition()
+                    .delay(i * 30)
+                    .duration(400)
+                    .attr('opacity', 1);
+            });
+
+            link.each(function(d, i) {
+                d3.select(this).transition()
+                    .delay(i * 15)
+                    .duration(300)
+                    .attr('opacity', 1);
+            });
+
+            // Zoom
+            svg.call(d3.zoom().on('zoom', (e) => g.attr('transform', e.transform)));
+
+            simulation.on('tick', () => {
+                link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+                node.attr('cx', d => d.x).attr('cy', d => d.y);
+                label.attr('x', d => d.x).attr('y', d => d.y + 18);
+            });
+        }
+        function renderOverlayGraph() {
+            fetch('tedai/ontology.json')
+                .then(r => r.json())
+                .then(raw => {
+                    const nodes = (raw.nodes || []).map(n => ({
+                        id: n.id,
+                        label: n.label || n.id,
+                        description: n.description || n.definition || ''
+                    }));
+                    const links = (raw.edges || []).map(e => ({
+                        source: e.source,
+                        target: e.target,
+                        relationship: Array.isArray(e.relationship) ? e.relationship : [e.relationship || 'related_to']
+                    }));
+
+                    const panel = document.querySelector('.overlay-panel');
+                    const w = panel.clientWidth;
+                    const h = panel.clientHeight;
+
+                    const svg = d3.select('#overlayGraph')
+                        .attr('width', w)
+                        .attr('height', h);
+
+                    const g = svg.append('g');
+                    const tooltip = document.getElementById('graph-tooltip');
+
+                    let oNodeColor = '#2a5db0';
+                    let oEdgeColor = '#aaaaaa';
+
+                    const simulation = d3.forceSimulation(nodes)
+                        .force('link', d3.forceLink(links).id(d => d.id).distance(90))
+                        .force('charge', d3.forceManyBody().strength(-200))
+                        .force('center', d3.forceCenter(w / 2, h / 2));
+
+                    const link = g.append('g').selectAll('line')
+                        .data(links).enter().append('line')
+                        .attr('stroke', oEdgeColor).attr('stroke-width', 0.5)
+                        .attr('opacity', 0);
+
+                    const edgeLabel = g.append('g').selectAll('text')
+                        .data(links).enter().append('text')
+                        .attr('class', 'o-edge-label')
+                        .text(d => d.relationship.join(', '))
+                        .attr('text-anchor', 'middle')
+                        .attr('font-size', '7px')
+                        .attr('fill', oEdgeColor)
+                        .attr('font-family', 'IBM Plex Mono, monospace')
+                        .attr('pointer-events', 'none')
+                        .attr('opacity', 0);
+
+                    const node = g.append('g').selectAll('circle')
+                        .data(nodes).enter().append('circle')
+                        .attr('r', 10)
+                        .attr('fill', oNodeColor)
+                        .attr('opacity', 0)
+                        .call(d3.drag()
+                            .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+                            .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+                            .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+                        )
+                        .on('mouseover', (event, d) => {
+                            tooltip.innerHTML = '<strong>' + d.label + '</strong>' + (d.description ? '<br>' + d.description : '');
+                            tooltip.style.visibility = 'visible';
+                        })
+                        .on('mousemove', (event) => {
+                            tooltip.style.top = (event.clientY + 12) + 'px';
+                            tooltip.style.left = (event.clientX + 12) + 'px';
+                        })
+                        .on('mouseout', () => { tooltip.style.visibility = 'hidden'; });
+
+                    const label = g.append('g').selectAll('text')
+                        .data(nodes).enter().append('text')
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', '#666')
+                        .attr('font-size', '8px')
+                        .attr('font-family', 'IBM Plex Mono, monospace')
+                        .attr('pointer-events', 'none')
+                        .attr('opacity', 0)
+                        .text(d => d.label);
+
+                    // Staggered fade-in
+                    node.each(function(d, i) {
+                        d3.select(this).transition().delay(i * 25).duration(400).attr('opacity', 0.85);
+                    });
+                    label.each(function(d, i) {
+                        d3.select(this).transition().delay(i * 25).duration(400).attr('opacity', 1);
+                    });
+                    link.each(function(d, i) {
+                        d3.select(this).transition().delay(i * 12).duration(300).attr('opacity', 1);
+                    });
+                    edgeLabel.each(function(d, i) {
+                        d3.select(this).transition().delay(i * 12).duration(300).attr('opacity', 1);
+                    });
+
+                    svg.call(d3.zoom().on('zoom', (e) => g.attr('transform', e.transform)));
+
+                    simulation.on('tick', () => {
+                        link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+                            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+                        node.attr('cx', d => d.x).attr('cy', d => d.y);
+                        label.attr('x', d => d.x).attr('y', d => d.y + 20);
+                        edgeLabel.attr('x', d => (d.source.x + d.target.x) / 2)
+                            .attr('y', d => (d.source.y + d.target.y) / 2 - 6);
+                    });
+
+                    // Color controls
+                    document.getElementById('oNodeColor').addEventListener('input', (e) => {
+                        oNodeColor = e.target.value;
+                        node.attr('fill', oNodeColor);
+                        document.querySelectorAll('.o-filter-btn.active').forEach(b => {
+                            b.style.backgroundColor = oNodeColor;
+                            b.style.borderColor = oNodeColor;
+                        });
+                    });
+
+                    document.getElementById('oEdgeColor').addEventListener('input', (e) => {
+                        oEdgeColor = e.target.value;
+                        link.attr('stroke', oEdgeColor);
+                        edgeLabel.attr('fill', oEdgeColor);
+                    });
+
+                    // Filters
+                    const relationships = new Set();
+                    links.forEach(l => l.relationship.forEach(r => relationships.add(r)));
+
+                    const filterContainer = document.getElementById('overlayFilters');
+                    const allBtn = document.createElement('button');
+                    allBtn.textContent = 'Show All';
+                    allBtn.className = 'o-filter-btn active';
+                    allBtn.dataset.rel = 'all';
+                    filterContainer.appendChild(allBtn);
+
+                    relationships.forEach(rel => {
+                        const btn = document.createElement('button');
+                        btn.textContent = rel;
+                        btn.className = 'o-filter-btn';
+                        btn.dataset.rel = rel;
+                        filterContainer.appendChild(btn);
+                    });
+
+                    let activeFilters = new Set(['all']);
+
+                    filterContainer.addEventListener('click', (e) => {
+                        const btn = e.target.closest('.o-filter-btn');
+                        if (!btn) return;
+                        const rel = btn.dataset.rel;
+
+                        if (rel === 'all') {
+                            filterContainer.querySelectorAll('.o-filter-btn').forEach(b => { b.classList.remove('active'); b.style.backgroundColor = ''; b.style.borderColor = ''; b.style.color = ''; });
+                            btn.classList.add('active');
+                            activeFilters = new Set(['all']);
+                        } else {
+                            btn.classList.toggle('active');
+                            if (btn.classList.contains('active')) {
+                                activeFilters.add(rel);
+                                activeFilters.delete('all');
+                                filterContainer.querySelector('[data-rel="all"]').classList.remove('active');
+                                filterContainer.querySelector('[data-rel="all"]').style.backgroundColor = '';
+                            } else {
+                                activeFilters.delete(rel);
+                            }
+                            if (activeFilters.size === 0) {
+                                activeFilters = new Set(['all']);
+                                filterContainer.querySelector('[data-rel="all"]').classList.add('active');
+                            }
+                        }
+
+                        // Style active buttons
+                        filterContainer.querySelectorAll('.o-filter-btn').forEach(b => {
+                            if (b.classList.contains('active')) {
+                                b.style.backgroundColor = oNodeColor;
+                                b.style.borderColor = oNodeColor;
+                                b.style.color = '#fff';
+                            } else {
+                                b.style.backgroundColor = '';
+                                b.style.borderColor = '';
+                                b.style.color = '';
+                            }
+                        });
+
+                        // Apply filter
+                        const filters = [...activeFilters];
+                        if (filters.includes('all')) {
+                            link.style('opacity', 1);
+                            node.style('opacity', 0.85);
+                            label.style('opacity', 1);
+                            edgeLabel.style('opacity', 1).attr('fill', oEdgeColor);
+                        } else {
+                            const connectedIds = new Set();
+                            link.each(function(d) {
+                                if (d.relationship.some(r => filters.includes(r))) {
+                                    connectedIds.add(d.source.id || d.source);
+                                    connectedIds.add(d.target.id || d.target);
+                                }
+                            });
+                            link.each(function(d) {
+                                const match = d.relationship.some(r => filters.includes(r));
+                                d3.select(this).style('opacity', match ? 1 : 0.08);
+                            });
+                            node.each(function(d) { d3.select(this).style('opacity', connectedIds.has(d.id) ? 0.85 : 0.1); });
+                            label.each(function(d) { if (d) d3.select(this).style('opacity', connectedIds.has(d.id) ? 1 : 0.1); });
+                            edgeLabel.each(function(d) {
+                                const match = d.relationship.some(r => filters.includes(r));
+                                d3.select(this).style('opacity', match ? 1 : 0.05).attr('fill', match ? '#333' : oEdgeColor);
+                            });
+                        }
+                    });
+                });
+        }
+    </script>
+    <div id="graph-tooltip"></div>
+
+    <!-- Fullscreen overlay panel -->
+    <div class="graph-overlay" id="graphOverlay">
+        <div class="overlay-backdrop" id="overlayBackdrop"></div>
+        <div class="overlay-panel">
+            <button class="overlay-close" id="overlayClose" title="Close">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <div class="overlay-controls" id="overlayControls">
+                <div class="color-row"><span>Node:</span><input type="color" id="oNodeColor" value="#2a5db0"></div>
+                <div class="color-row"><span>Edge:</span><input type="color" id="oEdgeColor" value="#aaaaaa"></div>
+            </div>
+            <div class="overlay-filters" id="overlayFilters"></div>
+            <svg class="overlay-graph" id="overlayGraph"></svg>
+        </div>
+    </div>
+    <script>
+        const graphOverlay = document.getElementById('graphOverlay');
+        const overlayBackdrop = document.getElementById('overlayBackdrop');
+        const overlayClose = document.getElementById('overlayClose');
+        const expandBtn = document.getElementById('expandBtn');
+        let overlayRendered = false;
+
+        expandBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Clear previous graph
+            d3.select('#overlayGraph').selectAll('*').remove();
+            document.getElementById('overlayFilters').innerHTML = '';
+            graphOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderOverlayGraph();
+        });
+
+        overlayClose.addEventListener('click', closeOverlay);
+        overlayBackdrop.addEventListener('click', closeOverlay);
+
+        function closeOverlay() {
+            // Fade out nodes before closing
+            const totalNodes = d3.select('#overlayGraph').selectAll('circle').size();
+            d3.select('#overlayGraph').selectAll('circle')
+                .each(function(d, i) {
+                    d3.select(this).transition().delay(i * 15).duration(300)
+                        .attr('opacity', 0)
+                        .attr('r', 0);
+                });
+            d3.select('#overlayGraph').selectAll('text')
+                .each(function(d, i) {
+                    d3.select(this).transition().delay(i * 15).duration(300)
+                        .attr('opacity', 0)
+                        .attr('font-size', '0px');
+                });
+            d3.select('#overlayGraph').selectAll('line')
+                .each(function(d, i) {
+                    d3.select(this).transition().delay(i * 8).duration(200)
+                        .attr('opacity', 0);
+                });
+
+            // Wait for most nodes to fade out before closing panel
+            const fadeTime = Math.max(totalNodes * 15 + 250, 800);
+            setTimeout(() => {
+                graphOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+
+                // Re-animate mini graph
+                d3.select('#miniGraph').selectAll('circle')
+                    .attr('opacity', 0)
+                    .each(function(d, i) {
+                        d3.select(this).transition().delay(i * 30).duration(400).attr('opacity', 0.85);
+                    });
+                d3.select('#miniGraph').selectAll('text')
+                    .attr('opacity', 0)
+                    .each(function(d, i) {
+                        d3.select(this).transition().delay(i * 30).duration(400).attr('opacity', 1);
+                    });
+                d3.select('#miniGraph').selectAll('line')
+                    .attr('opacity', 0)
+                    .each(function(d, i) {
+                        d3.select(this).transition().delay(i * 15).duration(300).attr('opacity', 1);
+                    });
+            }, 500);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && graphOverlay.classList.contains('active')) closeOverlay();
         });
     </script>
 </body>
