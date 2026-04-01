@@ -1,288 +1,452 @@
-/* ========== Theme ========== */
-:root {
-    --bg: #0b1220;
-    --text: #e5e7eb;
-    --text-strong: #f3f4f6;
-    --muted: #9ca3af;
-    --brand: #60a5fa;
-    --brand-hover: #93c5fd;
-    --card: #0f172a;
-    --border: #1f2937;
-    --radius: 10px;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        --bg: #f9fafb;
-        --text: #1f2937;
-        --text-strong: #111827;
-        --muted: #6b7280;
-        --brand: #2563eb;
-        --brand-hover: #1d4ed8;
-        --card: #ffffff;
-        --border: #e5e7eb;
-    }
-}
-
-/* ========== Base ========== */
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    height: 100%;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+body.ready {
+    overflow: auto;
+}
+
+/* ========== Page wrapper ========== */
+.page {
+    padding: 40px 48px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 0 16px;
-    max-width: 1100px;
-    line-height: 1.75;
-    background: var(--bg);
-    color: var(--text);
-}
-
-h1 {
-    margin: .1rem 0;
-    font-size: clamp(2rem, 2.2vw + 1.2rem, 2.8rem);
-    color: var(--text-strong);
-    font-weight: 600;
-}
-
-h2 {
-    margin: .1rem 0 1rem;
-    font-size: 1.4rem;
-    color: var(--text-strong);
-}
-
-.muted {
-    color: var(--muted);
 }
 
 /* ========== Header ========== */
-header {
-    padding: 28px 0 8px;
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+    transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.profile {
+.ascii-hero {
+    display: inline-flex;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.ascii-hero pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.2;
+    color: #1a1a1a;
+    white-space: pre;
+    text-align: left;
+    overflow: hidden;
+    width: 0;
+}
+
+.ascii-hero pre.revealed {
+    overflow: visible;
+}
+
+/* Loading percent */
+.loading-percent {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: #999;
+    font-weight: 500;
+    margin-top: 4px;
+    margin-bottom: 0;
+    transition: opacity 0.4s ease;
+}
+
+.loading-percent.done {
+    opacity: 0;
+}
+
+/* Nav links */
+.header-nav {
+    font-size: 13px;
+    display: block;
+    opacity: 0;
+    margin-top: 8px;
+}
+
+.header-nav.revealed {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+.header-nav a {
+    color: #1a1a1a;
+    text-decoration: underline;
+    margin: 0 12px;
+}
+
+.header-nav a:hover {
+    color: #555;
+}
+
+/* ========== Main content ========== */
+.main .type-block {
+    opacity: 0;
+}
+
+.main .type-block.revealed {
+    opacity: 1;
+}
+
+.main h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2a5db0;
+    margin-top: 32px;
+    margin-bottom: 12px;
+}
+
+.main p {
+    margin-bottom: 8px;
+}
+
+.main a {
+    color: #1a1a1a;
+    text-decoration: underline;
+}
+
+.main a:hover {
+    color: #555;
+}
+
+/* ========== Experience hover terminal ========== */
+.work-item {
+    margin-bottom: 8px;
+}
+
+.work-role {
+    font-weight: 700;
+    font-size: 14px;
+    padding: 2px 0;
+    cursor: pointer;
+    transition: color 0.15s;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.work-role:hover {
+    color: #1a1a1a;
+}
+
+.work-arrow {
+    font-size: 12px;
+    color: #999;
+    transition: transform 0.2s, color 0.15s;
+    display: inline-block;
+}
+
+.work-role:hover .work-arrow {
+    color: #2a5db0;
+}
+
+.work-item.open .work-arrow {
+    transform: rotate(90deg);
+    color: #2a5db0;
+}
+
+.work-role a {
+    color: #2a5db0;
+    text-decoration: underline;
+}
+
+.work-role a:hover {
+    color: #1a1a1a;
+}
+
+.terminal-out {
+    font-size: 13px;
+    color: #555;
+    padding-left: 24px;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s ease;
+}
+
+.terminal-out .typed {
+    white-space: pre-wrap;
+}
+
+/* ========== Inline graph preview ========== */
+.graph-inline {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s ease;
+    margin-left: 0;
+    margin-top: 4px;
+    position: relative;
+    border-radius: 4px;
+}
+
+.graph-inline.active {
+    height: 300px;
+    border: 1px solid #e0e0e0;
+}
+
+.graph-inline svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #fafafa;
+}
+
+.graph-inline .graph-expand {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    z-index: 10;
+    background: none;
+    border: none;
+    padding: 4px;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+}
+
+.graph-inline .graph-expand:hover {
+    opacity: 1;
+}
+
+.graph-inline .graph-expand svg {
+    width: 16px;
+    height: 16px;
+    fill: #1a1a1a;
+}
+
+/* ========== Fullscreen overlay panel ========== */
+.graph-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
-.profile-pic {
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--brand);
+.graph-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
-.profile-text h1 {
-    margin-bottom: 0;
+.graph-overlay .overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
 }
 
-.profile-text p {
-    margin-top: 0;
+.graph-overlay .overlay-panel {
+    position: relative;
+    width: 55vw;
+    height: 70vh;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* ========== Layout ========== */
-.layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 24px;
-    align-items: start;
-    margin: 18px 0 32px;
+.graph-overlay.active .overlay-panel {
+    transform: scale(1);
 }
 
-/* ========== Sidebar / Tabs ========== */
-.sidebar {
-    position: sticky;
-    top: 18px;
+.graph-overlay .overlay-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    opacity: 0.4;
+    transition: opacity 0.2s;
 }
 
-.sidebar nav {
+.graph-overlay .overlay-close:hover {
+    opacity: 1;
+}
+
+.graph-overlay .overlay-close svg {
+    width: 20px;
+    height: 20px;
+    fill: #1a1a1a;
+}
+
+.graph-overlay svg.overlay-graph {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.overlay-controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* One style that works for BOTH <button.tab-link> and <a.tab-link> */
-.sidebar .tab-link {
-    /* reset for button while harmless for <a> */
-    all: unset;
-    cursor: pointer;
-
-    display: block;
-    color: var(--text);
-    font-weight: 600;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+.overlay-controls .color-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #666;
 }
 
-.sidebar .tab-link:hover {
-    color: var(--brand);
-    border-color: var(--brand);
-}
-
-.sidebar .tab-link.is-active {
-    border-color: var(--brand);
-}
-
-.sidebar hr {
+.overlay-controls input[type="color"] {
+    appearance: none;
+    -webkit-appearance: none;
     border: none;
-    border-top: 1px solid var(--border);
-    margin: 10px 0;
-}
-
-/* Content area that holds panels */
-.tabs {
-    min-width: 0;
-}
-
-/* Panels (hide inactive) */
-.tab-panel {
-    display: none;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 16px;
-}
-
-.tab-panel.is-active {
-    display: block;
-}
-
-/* ========== Cards (resume-tight) ========== */
-.card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px;
-    margin: 10px 0;
-}
-
-.card h3 {
-    margin: 0 0 .25rem 0;
-    font-size: 1.05rem;
-    color: var(--text-strong);
-}
-
-.card p em {
-    display: block;
-    font-style: normal;
-    color: var(--muted);
-    font-size: .92rem;
-    margin: .05rem 0 .35rem;
-}
-
-.card ul {
-    margin: .2rem 0 0 1.1rem;
-    padding-left: 0;
-    list-style: disc;
-}
-
-.card li {
-    font-size: .97rem;
-    line-height: 1.5;
-    margin: .18rem 0;
-}
-
-/* Experience header spacing */
-#experience h2 {
-    margin: .25rem 0 .6rem;
-}
-
-/* ========== Certificate ========== */
-.certificate-toggle {
-    margin-top: 8px;
-}
-
-.certificate-toggle summary {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    padding: 0;
     cursor: pointer;
-    color: var(--brand);
-    font-size: .92rem;
-    font-weight: 600;
-    list-style: none;
+    box-shadow: 0 0 0 1px #ccc;
 }
 
-.certificate-toggle summary::before {
-    content: "▸ ";
+.overlay-controls input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; border: none; }
+.overlay-controls input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+.overlay-filters {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 50px;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
-.certificate-toggle[open] summary::before {
-    content: "▾ ";
+.overlay-filters .o-filter-btn {
+    padding: 3px 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s;
 }
 
-.certificate-toggle summary:hover {
-    color: var(--brand-hover);
+.overlay-filters .o-filter-btn:hover {
+    border-color: #999;
 }
 
-.certificate {
-    max-width: 340px;
-    width: 100%;
-    margin-top: 8px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
+.overlay-filters .o-filter-btn.active {
+    background: #2a5db0;
+    color: #fff;
+    border-color: #2a5db0;
+}
+
+#graph-tooltip {
+    position: fixed;
+    visibility: hidden;
+    background: #1e1e1e;
+    color: #ccc;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
     pointer-events: none;
-    user-select: none;
-    -webkit-user-drag: none;
+    max-width: 220px;
+    word-wrap: break-word;
+    z-index: 1000;
+    line-height: 1.4;
 }
 
-/* ========== Footer ========== */
-footer {
-    margin: 36px 0 24px;
-    text-align: center;
-    color: var(--muted);
-    font-size: .95rem;
+/* ========== Project cards ========== */
+.exp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-/* ========== Responsive ========== */
-@media (max-width: 760px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    .sidebar .tab-link {
-        flex: 1 0 auto;
-        text-align: center;
-    }
+.exp-card {
+    border: 1px solid #e0e0e0;
+    padding: 16px;
+    transition: border-color 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
-.sidebar .external {
-    text-decoration: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 10px;
+.exp-card:hover {
+    border-color: #1a1a1a;
+}
+
+.exp-title {
+    font-weight: 700;
+    font-size: 14px;
     display: block;
-    font-weight: 600;
-    color: var(--text);
+    margin-bottom: 2px;
 }
 
-.sidebar .external:hover {
-    color: var(--brand);
-    border-color: var(--brand);
+.exp-org {
+    font-size: 12px;
+    color: #2a5db0;
+    display: block;
+    margin-bottom: 10px;
 }
 
-/* Global link style (everywhere) */
-a, a:link, a:visited {
-  color: var(--brand);
-  text-decoration: none;
-  border-bottom: 1px dashed transparent;
-  transition: border-color .15s ease, color .15s ease;
+.exp-desc {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 10px;
 }
-a:hover,
-a:focus-visible {
-  color: var(--brand-hover);
-  border-bottom-color: var(--brand-hover);
-  outline: none;
+
+.exp-links {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exp-cta {
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #2a5db0;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.exp-github {
+    display: inline-block;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.exp-github:hover {
+    opacity: 1;
+}
+
+.exp-github svg {
+    width: 16px;
+    height: 16px;
+    fill: #1a1a1a;
+    vertical-align: middle;
 }
