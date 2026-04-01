@@ -15,7 +15,6 @@ const oscarFullWidth = 227;
 const arenasFullWidth = 294;
 const totalNameWidth = oscarFullWidth + arenasFullWidth;
 
-// Calculate how far to push header down to center it
 function getCenterOffset() {
     const headerRect = header.getBoundingClientRect();
     const headerCenter = headerRect.top + headerRect.height / 2;
@@ -23,7 +22,6 @@ function getCenterOffset() {
     return viewportCenter - headerCenter;
 }
 
-// Start centered
 const offset = getCenterOffset();
 header.style.transform = 'translateY(' + offset + 'px)';
 
@@ -37,7 +35,6 @@ const increment = 100 / steps;
 const loadInterval = setInterval(() => {
     progress += increment;
 
-    // At ~80%, animate header back to its natural position
     if (progress >= 80 && !hasSettled) {
         hasSettled = true;
         header.style.transform = 'translateY(0)';
@@ -88,73 +85,102 @@ function onNameDone() {
 
     setTimeout(() => {
         document.body.classList.add('ready');
+        document.documentElement.classList.add('ready');
     }, delay + 200);
 }
 
-// ===== Experience hover/click terminal =====
-document.querySelectorAll('.work-item').forEach(item => {
+// ===== Experience hover/click terminal (B1, B2 fixed) =====
+const isTouch = 'ontouchstart' in window;
+const allWorkItems = document.querySelectorAll('.work-item');
+
+function closeAllWorkItems() {
+    allWorkItems.forEach(item => {
+        const terminal = item.querySelector('.terminal-out');
+        const typedEl = terminal.querySelector('.typed');
+        clearInterval(item._typeTimer);
+        item._typeTimer = null;
+        typedEl.textContent = '';
+        terminal.style.height = '0';
+        item.classList.remove('open');
+        item._locked = false;
+    });
+}
+
+allWorkItems.forEach(item => {
     const role = item.querySelector('.work-role');
     const terminal = item.querySelector('.terminal-out');
     const typedEl = terminal.querySelector('.typed');
-    let typeTimer = null;
-    let charIndex = 0;
-    let locked = false;
+    item._typeTimer = null;
+    item._locked = false;
 
     function openAndType() {
-        clearInterval(typeTimer);
+        clearInterval(item._typeTimer);
         const text = role.dataset.info;
-        charIndex = 0;
+        let charIndex = 0;
         typedEl.textContent = '';
         terminal.style.height = '28px';
         item.classList.add('open');
 
-        typeTimer = setInterval(() => {
+        item._typeTimer = setInterval(() => {
             if (charIndex < text.length) {
                 typedEl.textContent += text[charIndex];
                 charIndex++;
             } else {
-                clearInterval(typeTimer);
-                typeTimer = null;
+                clearInterval(item._typeTimer);
+                item._typeTimer = null;
             }
         }, 25);
     }
 
     function close() {
-        clearInterval(typeTimer);
-        typeTimer = null;
+        clearInterval(item._typeTimer);
+        item._typeTimer = null;
         typedEl.textContent = '';
         terminal.style.height = '0';
         item.classList.remove('open');
+        item._locked = false;
     }
 
-    role.addEventListener('mouseenter', () => {
-        if (!locked && document.body.classList.contains('ready')) {
-            locked = true;
-            openAndType();
-        }
-    });
+    if (isTouch) {
+        // Touch devices: tap to toggle (B1 fix)
+        role.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') return;
+            if (item._locked) {
+                close();
+            } else {
+                item._locked = true;
+                openAndType();
+            }
+        });
+    } else {
+        // Desktop: hover opens, click closes
+        role.addEventListener('mouseenter', () => {
+            if (!item._locked && document.body.classList.contains('ready')) {
+                item._locked = true;
+                openAndType();
+            }
+        });
 
-    role.addEventListener('click', (e) => {
-        if (e.target.tagName === 'A') return;
-        if (locked) {
-            locked = false;
-            close();
-        }
-    });
+        role.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') return;
+            if (item._locked) {
+                close();
+            }
+        });
+    }
 });
 
-// ===== NNSA inline graph =====
+// ===== NNSA inline graph (B3, B4 fixed) =====
 let graphRendered = false;
 const graphInline = document.getElementById('graphInline');
 const nnsaItem = document.getElementById('nnsa-item');
+let miniSimulation = null;
 
-// Watch for NNSA opening — show graph after text types
 const nnsaObserver = new MutationObserver(() => {
     if (nnsaItem.classList.contains('open')) {
         setTimeout(() => {
             graphInline.classList.add('active');
             if (!graphRendered) {
-                graphRendered = true;
                 loadMiniGraph();
             }
         }, 800);
@@ -166,8 +192,12 @@ nnsaObserver.observe(nnsaItem, { attributes: true, attributeFilter: ['class'] })
 
 function loadMiniGraph() {
     fetch('tedai/ontology.json')
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error('Failed to load ontology data');
+            return r.json();
+        })
         .then(raw => {
+            graphRendered = true; // B4: set after successful load
             const topIds = new Set(['Attribute', 'Trustworthy', 'Effective', 'Deployable']);
             const allEdges = raw.edges || [];
             allEdges.forEach(e => {
@@ -197,6 +227,10 @@ function loadMiniGraph() {
                 }));
 
             renderMiniGraph({ nodes, links });
+        })
+        .catch(() => {
+            // B3: graceful failure
+            graphRendered = false;
         });
 }
 
@@ -212,7 +246,7 @@ function renderMiniGraph(data) {
     const g = svg.append('g');
     const tooltip = document.getElementById('graph-tooltip');
 
-    const simulation = d3.forceSimulation(data.nodes)
+    miniSimulation = d3.forceSimulation(data.nodes)
         .force('link', d3.forceLink(data.links).id(d => d.id).distance(100))
         .force('charge', d3.forceManyBody().strength(-400))
         .force('center', d3.forceCenter(w / 2, h / 2))
@@ -230,17 +264,21 @@ function renderMiniGraph(data) {
         .attr('fill', '#2a5db0')
         .attr('opacity', 0)
         .call(d3.drag()
-            .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+            .on('start', (e, d) => { if (!e.active) miniSimulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
             .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
-            .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+            .on('end', (e, d) => { if (!e.active) miniSimulation.alphaTarget(0); d.fx = null; d.fy = null; })
         )
         .on('mouseover', (event, d) => {
-            tooltip.innerHTML = '<strong>' + d.label + '</strong>' + (d.description ? '<br>' + d.description : '');
+            // S1: use textContent instead of innerHTML
+            tooltip.textContent = d.label + (d.description ? ' — ' + d.description : '');
             tooltip.style.visibility = 'visible';
         })
         .on('mousemove', (event) => {
-            tooltip.style.top = (event.clientY + 12) + 'px';
-            tooltip.style.left = (event.clientX + 12) + 'px';
+            // B12: clamp tooltip to viewport
+            const x = Math.min(event.clientX + 12, window.innerWidth - 240);
+            const y = Math.min(event.clientY + 12, window.innerHeight - 60);
+            tooltip.style.top = y + 'px';
+            tooltip.style.left = x + 'px';
         })
         .on('mouseout', () => { tooltip.style.visibility = 'hidden'; });
 
@@ -254,7 +292,6 @@ function renderMiniGraph(data) {
         .attr('opacity', 0)
         .text(d => d.label);
 
-    // Animated entrance
     node.each(function(d, i) {
         d3.select(this).transition().delay(i * 30).duration(400).attr('opacity', 0.85);
     });
@@ -267,7 +304,7 @@ function renderMiniGraph(data) {
 
     svg.call(d3.zoom().on('zoom', (e) => g.attr('transform', e.transform)));
 
-    simulation.on('tick', () => {
+    miniSimulation.on('tick', () => {
         link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
             .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
         node.attr('cx', d => d.x).attr('cy', d => d.y);
@@ -275,11 +312,24 @@ function renderMiniGraph(data) {
     });
 }
 
-// ===== Fullscreen overlay graph =====
+// ===== Fullscreen overlay graph (B5, B6, B7, B9, B13, S1 fixed) =====
+let overlaySimulation = null;
+let isOverlayOpen = false;
+let isClosing = false;
+let closeTimeout = null;
+let colorListenersAttached = false;
+let currentOverlayState = { nodeColor: '#2a5db0', edgeColor: '#aaaaaa' };
+
 function renderOverlayGraph() {
     fetch('tedai/ontology.json')
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error('Failed to load');
+            return r.json();
+        })
         .then(raw => {
+            // Guard: if overlay was closed while fetch was in flight
+            if (!isOverlayOpen) return;
+
             const nodes = (raw.nodes || []).map(n => ({
                 id: n.id,
                 label: n.label || n.id,
@@ -302,17 +352,17 @@ function renderOverlayGraph() {
             const g = svg.append('g');
             const tooltip = document.getElementById('graph-tooltip');
 
-            let oNodeColor = '#2a5db0';
-            let oEdgeColor = '#aaaaaa';
+            currentOverlayState.nodeColor = '#2a5db0';
+            currentOverlayState.edgeColor = '#aaaaaa';
 
-            const simulation = d3.forceSimulation(nodes)
+            overlaySimulation = d3.forceSimulation(nodes)
                 .force('link', d3.forceLink(links).id(d => d.id).distance(90))
                 .force('charge', d3.forceManyBody().strength(-200))
                 .force('center', d3.forceCenter(w / 2, h / 2));
 
             const link = g.append('g').selectAll('line')
                 .data(links).enter().append('line')
-                .attr('stroke', oEdgeColor).attr('stroke-width', 0.5)
+                .attr('stroke', currentOverlayState.edgeColor).attr('stroke-width', 0.5)
                 .attr('opacity', 0);
 
             const edgeLabel = g.append('g').selectAll('text')
@@ -321,7 +371,7 @@ function renderOverlayGraph() {
                 .text(d => d.relationship.join(', '))
                 .attr('text-anchor', 'middle')
                 .attr('font-size', '7px')
-                .attr('fill', oEdgeColor)
+                .attr('fill', currentOverlayState.edgeColor)
                 .attr('font-family', 'IBM Plex Mono, monospace')
                 .attr('pointer-events', 'none')
                 .attr('opacity', 0);
@@ -329,20 +379,23 @@ function renderOverlayGraph() {
             const node = g.append('g').selectAll('circle')
                 .data(nodes).enter().append('circle')
                 .attr('r', 10)
-                .attr('fill', oNodeColor)
+                .attr('fill', currentOverlayState.nodeColor)
                 .attr('opacity', 0)
                 .call(d3.drag()
-                    .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+                    .on('start', (e, d) => { if (!e.active) overlaySimulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
                     .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
-                    .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+                    .on('end', (e, d) => { if (!e.active) overlaySimulation.alphaTarget(0); d.fx = null; d.fy = null; })
                 )
                 .on('mouseover', (event, d) => {
-                    tooltip.innerHTML = '<strong>' + d.label + '</strong>' + (d.description ? '<br>' + d.description : '');
+                    // S1: textContent instead of innerHTML
+                    tooltip.textContent = d.label + (d.description ? ' — ' + d.description : '');
                     tooltip.style.visibility = 'visible';
                 })
                 .on('mousemove', (event) => {
-                    tooltip.style.top = (event.clientY + 12) + 'px';
-                    tooltip.style.left = (event.clientX + 12) + 'px';
+                    const x = Math.min(event.clientX + 12, window.innerWidth - 240);
+                    const y = Math.min(event.clientY + 12, window.innerHeight - 60);
+                    tooltip.style.top = y + 'px';
+                    tooltip.style.left = x + 'px';
                 })
                 .on('mouseout', () => { tooltip.style.visibility = 'hidden'; });
 
@@ -372,7 +425,7 @@ function renderOverlayGraph() {
 
             svg.call(d3.zoom().on('zoom', (e) => g.attr('transform', e.transform)));
 
-            simulation.on('tick', () => {
+            overlaySimulation.on('tick', () => {
                 link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
                     .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
                 node.attr('cx', d => d.x).attr('cy', d => d.y);
@@ -381,21 +434,28 @@ function renderOverlayGraph() {
                     .attr('y', d => (d.source.y + d.target.y) / 2 - 6);
             });
 
-            // Color controls
-            document.getElementById('oNodeColor').addEventListener('input', (e) => {
-                oNodeColor = e.target.value;
-                node.attr('fill', oNodeColor);
-                document.querySelectorAll('.o-filter-btn.active').forEach(b => {
-                    b.style.backgroundColor = oNodeColor;
-                    b.style.borderColor = oNodeColor;
+            // B9: attach color listeners only once
+            if (!colorListenersAttached) {
+                colorListenersAttached = true;
+                document.getElementById('oNodeColor').addEventListener('input', (e) => {
+                    currentOverlayState.nodeColor = e.target.value;
+                    d3.select('#overlayGraph').selectAll('circle').attr('fill', e.target.value);
+                    document.querySelectorAll('.o-filter-btn.active').forEach(b => {
+                        b.style.backgroundColor = e.target.value;
+                        b.style.borderColor = e.target.value;
+                    });
                 });
-            });
 
-            document.getElementById('oEdgeColor').addEventListener('input', (e) => {
-                oEdgeColor = e.target.value;
-                link.attr('stroke', oEdgeColor);
-                edgeLabel.attr('fill', oEdgeColor);
-            });
+                document.getElementById('oEdgeColor').addEventListener('input', (e) => {
+                    currentOverlayState.edgeColor = e.target.value;
+                    d3.select('#overlayGraph').selectAll('line').attr('stroke', e.target.value);
+                    d3.select('#overlayGraph').selectAll('.o-edge-label').attr('fill', e.target.value);
+                });
+            }
+
+            // Reset color picker values
+            document.getElementById('oNodeColor').value = '#2a5db0';
+            document.getElementById('oEdgeColor').value = '#aaaaaa';
 
             // Filters
             const relationships = new Set();
@@ -443,11 +503,12 @@ function renderOverlayGraph() {
                     }
                 }
 
-                // Style active buttons
+                const nc = currentOverlayState.nodeColor;
+                const ec = currentOverlayState.edgeColor;
                 filterContainer.querySelectorAll('.o-filter-btn').forEach(b => {
                     if (b.classList.contains('active')) {
-                        b.style.backgroundColor = oNodeColor;
-                        b.style.borderColor = oNodeColor;
+                        b.style.backgroundColor = nc;
+                        b.style.borderColor = nc;
                         b.style.color = '#fff';
                     } else {
                         b.style.backgroundColor = '';
@@ -456,13 +517,12 @@ function renderOverlayGraph() {
                     }
                 });
 
-                // Apply filter
                 const filters = [...activeFilters];
                 if (filters.includes('all')) {
                     link.style('opacity', 1);
                     node.style('opacity', 0.85);
                     label.style('opacity', 1);
-                    edgeLabel.style('opacity', 1).attr('fill', oEdgeColor);
+                    edgeLabel.style('opacity', 1).attr('fill', ec);
                 } else {
                     const connectedIds = new Set();
                     link.each(function(d) {
@@ -479,14 +539,17 @@ function renderOverlayGraph() {
                     label.each(function(d) { if (d) d3.select(this).style('opacity', connectedIds.has(d.id) ? 1 : 0.1); });
                     edgeLabel.each(function(d) {
                         const match = d.relationship.some(r => filters.includes(r));
-                        d3.select(this).style('opacity', match ? 1 : 0.05).attr('fill', match ? '#333' : oEdgeColor);
+                        d3.select(this).style('opacity', match ? 1 : 0.05).attr('fill', match ? '#333' : ec);
                     });
                 }
             });
+        })
+        .catch(() => {
+            // B3: graceful failure for overlay
         });
 }
 
-// ===== Overlay open/close =====
+// ===== Overlay open/close (B5, B6, B7 fixed) =====
 document.addEventListener('DOMContentLoaded', () => {
     const graphOverlay = document.getElementById('graphOverlay');
     const overlayBackdrop = document.getElementById('overlayBackdrop');
@@ -495,6 +558,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     expandBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        // B5: prevent opening if already open or closing
+        if (isOverlayOpen || isClosing) return;
+        // B8: only allow after loading completes
+        if (!document.body.classList.contains('ready')) return;
+
+        // B6: cancel any pending close timeout
+        if (closeTimeout) {
+            clearTimeout(closeTimeout);
+            closeTimeout = null;
+        }
+
+        isOverlayOpen = true;
         d3.select('#overlayGraph').selectAll('*').remove();
         document.getElementById('overlayFilters').innerHTML = '';
         graphOverlay.classList.add('active');
@@ -506,6 +581,16 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayBackdrop.addEventListener('click', closeOverlay);
 
     function closeOverlay() {
+        // B7: prevent duplicate close calls
+        if (!isOverlayOpen || isClosing) return;
+        isClosing = true;
+
+        // B13: stop overlay simulation
+        if (overlaySimulation) {
+            overlaySimulation.stop();
+            overlaySimulation = null;
+        }
+
         const totalNodes = d3.select('#overlayGraph').selectAll('circle').size();
         d3.select('#overlayGraph').selectAll('circle')
             .each(function(d, i) {
@@ -526,9 +611,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         const fadeTime = Math.max(totalNodes * 15 + 250, 800);
-        setTimeout(() => {
+        closeTimeout = setTimeout(() => {
             graphOverlay.classList.remove('active');
             document.body.style.overflow = '';
+            isOverlayOpen = false;
+            isClosing = false;
+            closeTimeout = null;
 
             // Re-animate mini graph
             d3.select('#miniGraph').selectAll('circle')
@@ -550,6 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && graphOverlay.classList.contains('active')) closeOverlay();
+        // B7: check isClosing to prevent duplicate
+        if (e.key === 'Escape' && isOverlayOpen && !isClosing) closeOverlay();
     });
 });

@@ -1,5 +1,9 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+    overflow: hidden;
+}
+
 body {
     font-family: 'Courier New', Courier, monospace;
     font-size: 15px;
@@ -9,6 +13,7 @@ body {
     overflow: hidden;
 }
 
+html.ready,
 body.ready {
     overflow: auto;
 }
@@ -449,4 +454,86 @@ body.ready {
     height: 16px;
     fill: #1a1a1a;
     vertical-align: middle;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+    .page {
+        padding: 24px 20px;
+    }
+
+    .ascii-hero {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .ascii-hero pre {
+        font-size: 10px;
+        width: auto !important;
+        overflow: hidden !important;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.6s ease, opacity 0.6s ease;
+    }
+
+    .ascii-hero pre.revealed {
+        max-height: 200px;
+        opacity: 1;
+        overflow: visible !important;
+    }
+
+    .exp-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .graph-inline.active {
+        height: 220px;
+    }
+
+    .graph-overlay .overlay-panel {
+        width: 92vw;
+        height: 75vh;
+    }
+
+    .work-role {
+        font-size: 13px;
+        padding: 6px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        padding: 16px 14px;
+    }
+
+    .ascii-hero pre {
+        font-size: 8px;
+    }
+
+    .header-nav a {
+        margin: 0 6px;
+        font-size: 12px;
+    }
+
+    .work-role {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .graph-overlay .overlay-panel {
+        width: 96vw;
+        height: 80vh;
+    }
+
+    .overlay-filters {
+        bottom: 6px;
+        left: 6px;
+        right: 6px;
+    }
+
+    .overlay-controls {
+        top: 6px;
+        left: 6px;
+    }
 }
