@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TED-AI Ontology Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: #1e1e1e;
+            color: #ccc;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Graph fills the page */
+        #graph-ui {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .graph-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #graph {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Back link */
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 20;
+            padding: 8px 14px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'IBM Plex Mono', monospace;
+            transition: background 0.15s;
+        }
+
+        .back-link:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        /* Zoom button */
+        .zoom-btn {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            z-index: 20;
+            padding: 6px 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .zoom-btn:hover { background: #444; }
+
+        .zoom-btn.zoom-off {
+            background: #1e1e1e;
+            color: #666;
+        }
+
+        /* Filters */
+        .filter-container {
+            position: absolute;
+            bottom: 1rem;
+            left: 9rem;
+            z-index: 20;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            max-width: 75%;
+        }
+
+        .filter-label {
+            color: #ccc;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            margin-right: 4px;
+        }
+
+        .relationship-filter-btn {
+            padding: 5px 10px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .relationship-filter-btn:hover {
+            background: #444;
+        }
+
+        .relationship-filter-btn.active {
+            background: #007acc;
+            color: #000;
+            border-color: #888;
+        }
+
+        /* Color controls */
+        .color-controls-container {
+            position: absolute;
+            top: 4rem;
+            left: 1rem;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 0.6rem;
+        }
+
+        .color-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .color-label {
+            color: #ccc;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .color-option[type="color"] {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            background: none;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px #444;
+        }
+
+        .color-option[type="color"]::-webkit-color-swatch-wrapper { padding: 0; border: none; }
+        .color-option[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+        /* Tooltip */
+        #tooltip {
+            position: absolute;
+            visibility: hidden;
+            background: #2a2a2a;
+            color: #ccc;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            max-width: 280px;
+            word-wrap: break-word;
+            z-index: 100;
+            border: 1px solid #444;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="graph-ui">
+        <div class="graph-container">
+            <svg id="graph"></svg>
+        </div>
+
+        <a href="/prototype.html" class="back-link">← Back</a>
+
+        <button id="toggle-zoom" class="zoom-btn">Zoom ON</button>
+
+        <div id="relationship-filters" class="filter-container"></div>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <script>
+        // ===== Data Parser =====
+        function parseOntologyJSON(rawJson) {
+            const nodes = (rawJson.nodes || []).map((node, i) => ({
+                id: node.id || 'node_' + i,
+                label: node.label || node.name || node.id || 'Unnamed',
+                group: node.group || node.category || 'default',
+                description: node.description || node.definition || ''
+            }));
+
+            const links = (rawJson.edges || rawJson.links || []).map((edge, i) => ({
+                id: edge.id || 'edge_' + i,
+                source: edge.source || edge.from,
+                target: edge.target || edge.to,
+                relationship: edge.relationship || edge.type || 'related_to'
+            }));
+
+            return { nodes, links };
+        }
+
+        // ===== Drag =====
+        function drag(simulation) {
+            return d3.drag()
+                .on("start", (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x; d.fy = d.y;
+                })
+                .on("drag", (event, d) => { d.fx = event.x; d.fy = event.y; })
+                .on("end", (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null; d.fy = null;
+                });
+        }
+
+        // ===== Colors =====
+        let currentColorState = { nodeColor: '#007acc', edgeColor: '#aaaaaa' };
+
+        function updateNodeColors(color) {
+            d3.selectAll('circle').attr('fill', color);
+            document.querySelectorAll('.relationship-filter-btn.active').forEach(btn => {
+                btn.style.backgroundColor = color;
+                btn.style.color = '#000';
+            });
+            const zoomBtn = document.getElementById('toggle-zoom');
+            if (zoomBtn && !zoomBtn.classList.contains('zoom-off')) {
+                zoomBtn.style.backgroundColor = color;
+                zoomBtn.style.color = '#000';
+            }
+        }
+
+        function updateEdgeColors(color) {
+            d3.selectAll('line').attr('stroke', color);
+            d3.selectAll('.edge-label').attr('fill', color);
+        }
+
+        function updateFilterButtonStyles(nodeColor) {
+            document.querySelectorAll('.relationship-filter-btn').forEach(btn => {
+                if (btn.classList.contains('active')) {
+                    btn.style.backgroundColor = nodeColor;
+                    btn.style.color = '#000';
+                } else {
+                    btn.style.backgroundColor = '#2a2a2a';
+                    btn.style.color = '#ccc';
+                }
+            });
+        }
+
+        function createColorControls() {
+            const container = document.createElement('div');
+            container.className = 'color-controls-container';
+            document.getElementById('graph-ui').appendChild(container);
+
+            // Node color
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = 'color-selector';
+            nodeDiv.innerHTML = '<span class="color-label">Node:</span>';
+            const nodeInput = document.createElement('input');
+            nodeInput.type = 'color';
+            nodeInput.className = 'color-option';
+            nodeInput.value = '#007acc';
+            nodeInput.addEventListener('input', (e) => {
+                currentColorState.nodeColor = e.target.value;
+                updateNodeColors(e.target.value);
+                updateFilterButtonStyles(e.target.value);
+            });
+            nodeDiv.appendChild(nodeInput);
+
+            // Edge color
+            const edgeDiv = document.createElement('div');
+            edgeDiv.className = 'color-selector';
+            edgeDiv.innerHTML = '<span class="color-label">Edge:</span>';
+            const edgeInput = document.createElement('input');
+            edgeInput.type = 'color';
+            edgeInput.className = 'color-option';
+            edgeInput.value = '#aaaaaa';
+            edgeInput.addEventListener('input', (e) => {
+                currentColorState.edgeColor = e.target.value;
+                updateEdgeColors(e.target.value);
+            });
+            edgeDiv.appendChild(edgeInput);
+
+            container.appendChild(nodeDiv);
+            container.appendChild(edgeDiv);
+        }
+
+        // ===== Filters =====
+        function setupFilters(data) {
+            const relationships = new Set();
+            (data.links || []).forEach(e => {
+                if (Array.isArray(e.relationship)) {
+                    e.relationship.forEach(r => relationships.add(r));
+                } else if (e.relationship) {
+                    relationships.add(e.relationship);
+                }
+            });
+
+            const container = document.getElementById('relationship-filters');
+            container.innerHTML = '';
+
+            const label = document.createElement('span');
+            label.textContent = 'Filters:';
+            label.className = 'filter-label';
+            container.appendChild(label);
+
+            const allBtn = document.createElement('button');
+            allBtn.textContent = 'Show All';
+            allBtn.className = 'relationship-filter-btn active';
+            allBtn.dataset.relationship = 'all';
+            container.appendChild(allBtn);
+
+            relationships.forEach(rel => {
+                const btn = document.createElement('button');
+                btn.textContent = rel;
+                btn.className = 'relationship-filter-btn';
+                btn.dataset.relationship = rel;
+                container.appendChild(btn);
+            });
+
+            let activeFilters = new Set(['all']);
+            container.querySelectorAll('.relationship-filter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const rel = button.dataset.relationship;
+                    if (rel === 'all') {
+                        container.querySelectorAll('.relationship-filter-btn').forEach(b => b.classList.remove('active'));
+                        button.classList.add('active');
+                        activeFilters = new Set(['all']);
+                    } else {
+                        button.classList.toggle('active');
+                        if (button.classList.contains('active')) {
+                            activeFilters.add(rel);
+                            container.querySelector('[data-relationship="all"]').classList.remove('active');
+                            activeFilters.delete('all');
+                        } else {
+                            activeFilters.delete(rel);
+                        }
+                        if (activeFilters.size === 0) {
+                            container.querySelector('[data-relationship="all"]').classList.add('active');
+                            activeFilters = new Set(['all']);
+                        }
+                    }
+                    applyFilters([...activeFilters], data);
+                    updateFilterButtonStyles(currentColorState.nodeColor);
+                });
+            });
+        }
+
+        function applyFilters(filters, data) {
+            const links = d3.selectAll('line');
+            const nodes = d3.selectAll('circle');
+            const nodeLabels = d3.selectAll('text').filter(function() { return !d3.select(this).classed('edge-label'); });
+            const edgeLabels = d3.selectAll('.edge-label');
+
+            if (filters.includes('all')) {
+                links.style('opacity', 1).style('stroke-width', 1);
+                nodes.style('opacity', 1);
+                nodeLabels.style('opacity', 1);
+                edgeLabels.style('opacity', 1).style('font-weight', 'normal').style('fill', currentColorState.edgeColor).style('font-size', '9px');
+            } else {
+                const connectedIds = new Set();
+                links.each(function(d) {
+                    const rel = d.relationship;
+                    const matches = Array.isArray(rel) ? rel.some(r => filters.includes(r)) : filters.includes(rel);
+                    if (matches) {
+                        connectedIds.add(d.source.id || d.source);
+                        connectedIds.add(d.target.id || d.target);
+                    }
+                });
+                links.each(function(d) {
+                    const rel = d.relationship;
+                    const match = Array.isArray(rel) ? rel.some(r => filters.includes(r)) : filters.includes(rel);
+                    d3.select(this).style('opacity', match ? 1 : 0.1).style('stroke-width', match ? 2 : 0.5);
+                });
+                nodes.each(function(d) { d3.select(this).style('opacity', connectedIds.has(d.id) ? 1 : 0.2); });
+                nodeLabels.each(function(d) { if (d) d3.select(this).style('opacity', connectedIds.has(d.id) ? 1 : 0.2); });
+                edgeLabels.each(function(d) {
+                    const rel = d.relationship;
+                    const match = Array.isArray(rel) ? rel.some(r => filters.includes(r)) : filters.includes(rel);
+                    d3.select(this).style('opacity', match ? 1 : 0.1).style('font-weight', match ? 'bold' : 'normal').style('fill', match ? '#fff' : currentColorState.edgeColor);
+                });
+            }
+        }
+
+        // ===== Zoom =====
+        function setupZoom(svgSelection, g) {
+            const toggleBtn = document.getElementById('toggle-zoom');
+            let zoomEnabled = true;
+
+            const zoom = d3.zoom().on("zoom", (event) => {
+                if (zoomEnabled) g.attr("transform", event.transform);
+            });
+            svgSelection.call(zoom);
+
+            toggleBtn.addEventListener('click', () => {
+                zoomEnabled = !zoomEnabled;
+                toggleBtn.textContent = zoomEnabled ? 'Zoom ON' : 'Zoom OFF';
+                toggleBtn.classList.toggle('zoom-off', !zoomEnabled);
+                if (zoomEnabled) {
+                    toggleBtn.style.backgroundColor = currentColorState.nodeColor;
+                    toggleBtn.style.color = '#000';
+                } else {
+                    toggleBtn.style.backgroundColor = '#1e1e1e';
+                    toggleBtn.style.color = '#666';
+                }
+            });
+
+            // Initial zoom button color
+            toggleBtn.style.backgroundColor = currentColorState.nodeColor;
+            toggleBtn.style.color = '#000';
+        }
+
+        // ===== Render Graph =====
+        function renderGraph(data) {
+            const svgEl = d3.select("#graph")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", "0 0 800 600");
+
+            svgEl.selectAll("*").remove();
+
+            const g = svgEl.append("g");
+            const tooltip = document.getElementById('tooltip');
+
+            const simulation = d3.forceSimulation(data.nodes)
+                .force("link", d3.forceLink(data.links).id(d => d.id).distance(120))
+                .force("charge", d3.forceManyBody().strength(-200))
+                .force("center", d3.forceCenter(400, 300));
+
+            const link = g.append("g").selectAll("line")
+                .data(data.links).enter().append("line")
+                .attr("stroke", currentColorState.edgeColor);
+
+            const node = g.append("g").selectAll("circle")
+                .data(data.nodes).enter().append("circle")
+                .attr("r", 25)
+                .attr("fill", currentColorState.nodeColor)
+                .call(drag(simulation))
+                .on("mouseover", (event, d) => {
+                    tooltip.innerHTML = '<strong>' + d.label + '</strong><br/>' + (d.description || '');
+                    tooltip.style.visibility = "visible";
+                })
+                .on("mousemove", (event) => {
+                    tooltip.style.top = (event.pageY + 12) + 'px';
+                    tooltip.style.left = (event.pageX + 12) + 'px';
+                })
+                .on("mouseout", () => { tooltip.style.visibility = "hidden"; });
+
+            const nodeLabel = g.append("g").selectAll("text")
+                .data(data.nodes).enter().append("text")
+                .attr("text-anchor", "middle")
+                .attr("fill", "#fff")
+                .attr("font-size", "10px")
+                .attr("font-weight", "bold")
+                .attr("pointer-events", "none")
+                .text(d => d.label);
+
+            const edgeLabel = g.append("g").selectAll("text")
+                .data(data.links).enter().append("text")
+                .attr("class", "edge-label")
+                .text(d => Array.isArray(d.relationship) ? d.relationship.join(', ') : d.relationship)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "9px")
+                .attr("fill", currentColorState.edgeColor)
+                .attr("pointer-events", "none");
+
+            setupZoom(svgEl, g);
+
+            simulation.on("tick", () => {
+                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+                node.attr("cx", d => d.x).attr("cy", d => d.y);
+                nodeLabel.attr("x", d => d.x).attr("y", d => d.y + 3);
+                edgeLabel.attr("x", d => (d.source.x + d.target.x) / 2)
+                    .attr("y", d => (d.source.y + d.target.y) / 2 - 10);
+            });
+
+            setupFilters(data);
+            createColorControls();
+        }
+
+        // ===== Load and render =====
+        fetch('ontology.json')
+            .then(res => res.json())
+            .then(raw => {
+                const data = parseOntologyJSON(raw);
+                renderGraph(data);
+            });
+    </script>
+</body>
+</html>
